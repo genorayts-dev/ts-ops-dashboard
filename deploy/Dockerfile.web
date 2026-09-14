@@ -1,4 +1,6 @@
 FROM nginx:1.27
 COPY frontend/dist /usr/share/nginx/html
 COPY deploy/nginx.render.conf /etc/nginx/conf.d/default.conf
+COPY deploy/40-copy-htpasswd.sh /docker-entrypoint.d/40-copy-htpasswd.sh
+RUN chmod +x /docker-entrypoint.d/40-copy-htpasswd.sh
 EXPOSE 80
