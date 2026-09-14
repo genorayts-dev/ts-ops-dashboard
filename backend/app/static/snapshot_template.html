@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TS蹂몃? ?댁쁺 ??쒕낫??(?ㅻ깄??</title>
+<title>TS본부 운영 대시보드 (스냅샷)</title>
 <style>
   :root{
     --bg:#0f172a; --panel:#1e293b; --panel2:#2b3a52; --line:#3b4a63;
@@ -56,66 +56,66 @@
 </head>
 <body>
 <header>
-  <h1>TS蹂몃? ?댁쁺 ??쒕낫??/h1>
-  <span class="snapbadge">?ㅻ깄??/span>
-  <span class="meta" id="meta">遺덈윭?ㅻ뒗 以묅?/span>
+  <h1>TS본부 운영 대시보드</h1>
+  <span class="snapbadge">스냅샷</span>
+  <span class="meta" id="meta">불러오는 중…</span>
 </header>
 <nav>
-  <button data-tab="as" class="on">AS 遺꾩꽍</button>
-  <button data-tab="weekly">二쇰퀎 ?ㅼ쟻</button>
-  <button data-tab="map">吏??/button>
-  <button data-tab="tickets">AS ?대젰</button>
-  <button data-tab="recv">梨꾧텒</button>
+  <button data-tab="as" class="on">AS 분석</button>
+  <button data-tab="weekly">주별 실적</button>
+  <button data-tab="map">지도</button>
+  <button data-tab="tickets">AS 이력</button>
+  <button data-tab="recv">채권</button>
 </nav>
 <main>
   <section id="tab-as">
     <div class="grid cards" id="as-cards"></div>
-    <div class="panel"><h2>?붾퀎 AS 嫄댁닔쨌?섎━鍮?援ш??쒗듃, 議곗튂??湲곗?) 쨌 AS留ㅼ텧(D=二쇨컙蹂닿퀬, M쨌K=?듯빀?쒗듃 議곗튂?? K+?좎?蹂댁닔)</h2><div id="c-monthly" class="chart"></div></div>
+    <div class="panel"><h2>월별 AS 건수·수리비(구글시트, 조치일 기준) · AS매출(D=주간보고, M·K=통합시트 조치일, K+유지보수)</h2><div id="c-monthly" class="chart"></div></div>
     <div class="row2">
-      <div class="panel"><h2>?蹂?AS 嫄댁닔 鍮꾩쨷</h2><div id="c-byline" class="chart" style="height:240px"></div></div>
-      <div class="panel"><h2>蹂댁쬆 (臾댁긽/?좎긽)</h2><div id="c-warr" class="chart" style="height:240px"></div></div>
+      <div class="panel"><h2>팀별 AS 건수 비중</h2><div id="c-byline" class="chart" style="height:240px"></div></div>
+      <div class="panel"><h2>보증 (무상/유상)</h2><div id="c-warr" class="chart" style="height:240px"></div></div>
     </div>
     <div class="row2">
-      <div class="panel"><h2>遺덈웾 援щ텇 <span class="muted" style="font-weight:400;font-size:12px">쨌 3% 誘몃쭔 臾띠쓬</span></h2><div id="c-fix" class="chart" style="height:410px"></div><div id="fx-note" class="muted" style="font-size:11px;line-height:1.5;padding:4px 4px 0"></div></div>
-      <div class="panel"><h2>?λ퉬 紐⑤뜽 TOP 10 (嫄댁닔)</h2><div id="c-bymodel" class="chart" style="height:410px"></div></div>
+      <div class="panel"><h2>불량 구분 <span class="muted" style="font-weight:400;font-size:12px">· 3% 미만 묶음</span></h2><div id="c-fix" class="chart" style="height:410px"></div><div id="fx-note" class="muted" style="font-size:11px;line-height:1.5;padding:4px 4px 0"></div></div>
+      <div class="panel"><h2>장비 모델 TOP 10 (건수)</h2><div id="c-bymodel" class="chart" style="height:410px"></div></div>
     </div>
-    <div class="panel"><h2>諛섎났 AS ?λ퉬 (媛숈? ?쒕━?쇰쾲??3嫄??댁긽)</h2>
+    <div class="panel"><h2>반복 AS 장비 (같은 시리얼번호 3건 이상)</h2>
       <div class="scroll"><table id="t-repeat"></table></div></div>
   </section>
 
   <section id="tab-weekly" hidden>
     <div class="grid cards" id="wk-cards"></div>
-    <div class="panel"><h2>?蹂??붾퀎 AS留ㅼ텧 異붿씠 (D=二쇨컙蹂닿퀬 쨌 M쨌K=?듯빀?쒗듃 議곗튂??쨌 K???좎?蹂댁닔 ?ы븿)</h2>
+    <div class="panel"><h2>팀별 월별 AS매출 추이 (D=주간보고 · M·K=통합시트 조치일 · K는 유지보수 포함)</h2>
       <div id="c-trend" class="chart"></div><div id="trend-note" class="err"></div></div>
-    <div class="panel"><h2>?蹂??꾧퀎 AS留ㅼ텧 (1?붾????뱀썡 ?꾩쟻)</h2>
+    <div class="panel"><h2>팀별 누계 AS매출 (1월부터 당월 누적)</h2>
       <div id="c-trend-cum" class="chart" style="height:300px"></div></div>
     <div class="row2">
-      <div class="panel"><h2>?붾퀎 ?쒕퉬??嫄댁닔</h2><div id="c-svc" class="chart" style="height:300px"></div></div>
-      <div class="panel"><h2>?붾퀎 Inbound</h2><div id="c-inb" class="chart" style="height:300px"></div></div>
+      <div class="panel"><h2>월별 서비스 건수</h2><div id="c-svc" class="chart" style="height:300px"></div></div>
+      <div class="panel"><h2>월별 Inbound</h2><div id="c-inb" class="chart" style="height:300px"></div></div>
     </div>
-    <div class="panel"><h2>?붾퀎 ?곸꽭</h2><div class="scroll"><table id="t-weekly"></table></div></div>
+    <div class="panel"><h2>월별 상세</h2><div class="scroll"><table id="t-weekly"></table></div></div>
   </section>
 
   <section id="tab-map" hidden>
-    <div class="panel"><h2>?댁쇅 AS 援??蹂?遺꾪룷 (D Tech 쨌 M Tech) 쨌 ???ш린 = 嫄댁닔</h2>
+    <div class="panel"><h2>해외 AS 국가별 분포 (D Tech · M Tech) · 원 크기 = 건수</h2>
       <div id="c-worldmap" class="chart tall"></div><div id="wm-note" class="err"></div></div>
-    <div class="panel"><h2>援?궡 AS 吏??퀎 遺꾪룷 (K Tech 쨌 蹂몃?)</h2>
+    <div class="panel"><h2>국내 AS 지역별 분포 (K Tech · 본부)</h2>
       <div id="c-krmap" class="chart tall"></div><div id="kr-note" class="err"></div></div>
     <div class="row2">
-      <div class="panel"><h2>?댁쇅 援??蹂??곸꽭</h2><div class="scroll"><table id="t-country"></table></div></div>
-      <div class="panel"><h2>援?궡 吏??퀎 ?곸꽭</h2><div class="scroll"><table id="t-krregion"></table></div></div>
+      <div class="panel"><h2>해외 국가별 상세</h2><div class="scroll"><table id="t-country"></table></div></div>
+      <div class="panel"><h2>국내 지역별 상세</h2><div class="scroll"><table id="t-krregion"></table></div></div>
     </div>
   </section>
 
   <section id="tab-tickets" hidden>
     <div class="panel">
-      <h2>AS ?대젰 議고쉶 <span class="muted" id="tk-count"></span></h2>
+      <h2>AS 이력 조회 <span class="muted" id="tk-count"></span></h2>
       <div class="chips" id="tk-org"></div>
       <div class="chips">
-        <select id="tk-line"><option value="">?꾩껜 ?λ퉬援?/option></select>
-        <select id="tk-month"><option value="">?꾩껜 ??/option></select>
-        <select id="tk-warr"><option value="">臾댁긽+?좎긽</option><option>臾댁긽</option><option>?좎긽</option></select>
-        <input type="search" id="tk-q" placeholder="利앹긽쨌議곗튂쨌?먯씤쨌異쒗븯泥샕룸え?맞룹떆由ъ뼹踰덊샇 寃??/>
+        <select id="tk-line"><option value="">전체 장비군</option></select>
+        <select id="tk-month"><option value="">전체 월</option></select>
+        <select id="tk-warr"><option value="">무상+유상</option><option>무상</option><option>유상</option></select>
+        <input type="search" id="tk-q" placeholder="증상·조치·원인·출하처·모델·시리얼번호 검색"/>
       </div>
       <div class="scroll"><table id="t-tickets"></table></div>
     </div>
@@ -124,16 +124,16 @@
   <section id="tab-recv" hidden>
     <div class="grid cards" id="recv-cards"></div>
     <div class="row2">
-      <div class="panel"><h2>?蹂?梨꾧텒 湲덉븸 (?먰솕?섏궛)</h2><div id="c-recv-team" class="chart" style="height:280px"></div></div>
-      <div class="panel"><h2>?듯솕蹂?湲덉븸</h2><div id="c-recv-cur" class="chart" style="height:280px"></div></div>
+      <div class="panel"><h2>팀별 채권 금액 (원화환산)</h2><div id="c-recv-team" class="chart" style="height:280px"></div></div>
+      <div class="panel"><h2>통화별 금액</h2><div id="c-recv-cur" class="chart" style="height:280px"></div></div>
     </div>
     <div class="row2">
-      <div class="panel"><h2>?곹깭蹂?/h2><div id="c-recv-status" class="chart" style="height:280px"></div></div>
-      <div class="panel"><h2>?곗껜 寃쎄낵??(aging)</h2><div id="c-recv-aging" class="chart" style="height:280px"></div></div>
+      <div class="panel"><h2>상태별</h2><div id="c-recv-status" class="chart" style="height:280px"></div></div>
+      <div class="panel"><h2>연체 경과일 (aging)</h2><div id="c-recv-aging" class="chart" style="height:280px"></div></div>
     </div>
-    <div class="panel"><h2>嫄곕옒泥섎퀎 湲덉븸 (?蹂??곸쐞 15)</h2>
+    <div class="panel"><h2>거래처별 금액 (팀별 상위 15)</h2>
       <div class="scroll"><table id="t-recv"></table></div>
-      <div class="muted" style="font-size:11px;padding:4px">?섏쑉: ?ъ뾽怨꾪쉷 怨좎젙(USD 1,380 / EUR 1,640 / JPY 9.4 / CNY 195) 쨌 異쒖쿂: ?듯빀?쒗듃 梨꾧텒 D/M/K</div></div>
+      <div class="muted" style="font-size:11px;padding:4px">환율: 사업계획 고정(USD 1,380 / EUR 1,640 / JPY 9.4 / CNY 195) · 출처: 통합시트 채권 D/M/K</div></div>
   </section>
 </main>
 
@@ -147,7 +147,7 @@ const SNAPSHOT = /*__SNAPSHOT_JSON__*/;
 const GENERATED_AT = "__GENERATED_AT__";
 </script>
 <script>
-const won = (n) => "?? + Math.round(Number(n)||0).toLocaleString("ko-KR");
+const won = (n) => "₩" + Math.round(Number(n)||0).toLocaleString("ko-KR");
 const num = (n) => (Number(n)||0).toLocaleString("ko-KR");
 const el = (id) => document.getElementById(id);
 const esc = (s) => (s==null?"":String(s)).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
@@ -164,9 +164,9 @@ const LEG = { textStyle:{color:TXT} };
 const PAL = ["#818cf8","#38dcf0","#4ade80","#fbbf24","#f87171","#c084fc","#f472b6","#a3e635"];
 const PIE = ["#818cf8","#38dcf0","#4ade80","#fbbf24","#f472b6","#c084fc","#fb923c","#a3e635","#22d3ee","#f87171","#94a3b8"];
 const ORG_ORDER = ["D","M","K"];
-const ORG_NAME  = {D:"D Tech", M:"M Tech", K:"K Tech", "遺??:"K Tech"};
+const ORG_NAME  = {D:"D Tech", M:"M Tech", K:"K Tech", "부산":"K Tech"};
 const orgLabel  = (o) => ORG_NAME[o] || o;
-const orgRank   = (o) => { const i = ORG_ORDER.indexOf(o==="遺???"K":o); return i<0 ? 99 : i; };
+const orgRank   = (o) => { const i = ORG_ORDER.indexOf(o==="부산"?"K":o); return i<0 ? 99 : i; };
 const teamLabel = (t) => ORG_NAME[t] || (t + " Tech");
 function donut(arr){return {tooltip:{trigger:"item"},legend:{bottom:0,...LEG},
   series:[{type:"pie",radius:["45%","70%"],center:["50%","45%"],
@@ -183,7 +183,7 @@ document.querySelectorAll("nav button").forEach(b=>{
   };
 });
 
-// ========== AS 遺꾩꽍 ==========
+// ========== AS 분석 ==========
 function loadAS(){
   const o = SNAPSHOT.as_overview;
   const tr = SNAPSHOT.trend_revenue.value || SNAPSHOT.trend_revenue;
@@ -191,48 +191,48 @@ function loadAS(){
   const lastM = tr.length? Math.max(...tr.map(r=>r.month)) : null;
   const repairSum = o.by_line.reduce((s,r)=>s+Number(r.krw||0),0);
   el("as-cards").innerHTML = [
-    ["AS ?대젰 珥앷퀎", num(o.total), "?듯빀?쒗듃 湲곗? ?곗씠??],
-    ["?좎긽 鍮꾩쑉", ((o.warranty.find(w=>w.k==="?좎긽")?.n||0)*100/o.total).toFixed(1)+"%",
-      num(o.warranty.find(w=>w.k==="?좎긽")?.n||0)+"嫄??좎긽"],
-    ["???꾧퀎 AS留ㅼ텧", won(asRevYtd), lastM?`1~${lastM}??쨌 D=二쇨컙蹂닿퀬, M쨌K=?듯빀?쒗듃`:"二쇨컙蹂닿퀬 ?꾩슂"],
-    ["?섎━鍮??⑷퀎(?듯빀)", won(repairSum), "?듯빀?쒗듃 ?섎━鍮꾩슜 ??(D? 誘멸린??"],
+    ["AS 이력 총계", num(o.total), "통합시트 기준 데이터"],
+    ["유상 비율", ((o.warranty.find(w=>w.k==="유상")?.n||0)*100/o.total).toFixed(1)+"%",
+      num(o.warranty.find(w=>w.k==="유상")?.n||0)+"건 유상"],
+    ["연 누계 AS매출", won(asRevYtd), lastM?`1~${lastM}월 · D=주간보고, M·K=통합시트`:"주간보고 필요"],
+    ["수리비 합계(통합)", won(repairSum), "통합시트 수리비용 합 (D팀 미기재)"],
   ].map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="s">${c[2]}</div></div>`).join("");
 
   const L=[...o.by_line].sort((a,b)=> orgRank(a.org)-orgRank(b.org));
   chart("c-byline",{
     tooltip:{trigger:"item",formatter:p=>{const l=L[p.dataIndex];
-      return `${p.name}<br/>嫄댁닔 ${num(l.n)} (${p.percent}%)<br/>?좎긽 ${num(l.paid_n)} (${(l.paid_n*100/l.n).toFixed(0)}%)`;}},
+      return `${p.name}<br/>건수 ${num(l.n)} (${p.percent}%)<br/>유상 ${num(l.paid_n)} (${(l.paid_n*100/l.n).toFixed(0)}%)`;}},
     legend:{...LEG,orient:"vertical",right:12,top:"middle",
       formatter:name=>{const l=L.find(x=>orgLabel(x.org)===name);
-        return l?`${name}  ${num(l.n)}嫄?쨌 ?좎긽 ${(l.paid_n*100/l.n).toFixed(0)}%`:name;}},
+        return l?`${name}  ${num(l.n)}건 · 유상 ${(l.paid_n*100/l.n).toFixed(0)}%`:name;}},
     series:[{type:"pie",radius:["45%","72%"],center:["30%","52%"],
-      label:{show:true,color:TXT,fontSize:11,formatter:p=>`${p.name}\n${num(p.value)}嫄?${p.percent}%`},
+      label:{show:true,color:TXT,fontSize:11,formatter:p=>`${p.name}\n${num(p.value)}건 ${p.percent}%`},
       labelLine:{show:true,length:8,length2:10},
       data:L.map(l=>({name:orgLabel(l.org),value:l.n,
         itemStyle:{color:PAL[orgRank(l.org)%PAL.length]}}))}]});
 
-  const fxAll=[...o.fix_class].filter(f=>f.k!=="(誘몄긽)").sort((a,b)=>b.n-a.n);
+  const fxAll=[...o.fix_class].filter(f=>f.k!=="(미상)").sort((a,b)=>b.n-a.n);
   const fxThresh = o.total*0.03;
   const fxBig = fxAll.filter(f=>f.n>=fxThresh);
   const fxSmall = fxAll.filter(f=>f.n<fxThresh);
   const fxData = fxBig.map(f=>({k:f.k,n:f.n}));
-  if(fxSmall.length) fxData.push({k:`洹몄쇅 ${fxSmall.length}醫?, n:fxSmall.reduce((s,f)=>s+f.n,0),
+  if(fxSmall.length) fxData.push({k:`그외 ${fxSmall.length}종`, n:fxSmall.reduce((s,f)=>s+f.n,0),
                                   detail:fxSmall.map(f=>`${f.k} ${f.n}`).join(", ")});
   const fxTotal = fxData.reduce((s,r)=>s+r.n,0);
   chart("c-fix",{
-    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>${num(p.value)}嫄?(${p.percent}%)`
+    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>${num(p.value)}건 (${p.percent}%)`
       + (p.data.detail?`<br/><span style="color:#9aa7bd">${p.data.detail}</span>`:"")},
     legend:{type:"plain",bottom:6,left:"center",width:"96%",...LEG,itemWidth:11,itemHeight:8,itemGap:10,
       textStyle:{color:TXT,fontSize:10.5},
       formatter:name=>{const d=fxData.find(x=>x.k===name);
         return d?`${name} ${(d.n*100/fxTotal).toFixed(0)}%`:name;}},
     series:[{type:"pie",radius:["40%","60%"],center:["50%","41%"],
-      label:{show:true,color:TXT,fontSize:11,formatter:p=>`${p.name} ${num(p.value)}嫄?${p.percent}%`},
+      label:{show:true,color:TXT,fontSize:11,formatter:p=>`${p.name} ${num(p.value)}건 ${p.percent}%`},
       labelLine:{show:true,length:10,length2:14},
       minAngle:4,avoidLabelOverlap:true,
       data:fxData.map((r,i)=>({name:r.k,value:r.n,detail:r.detail,itemStyle:{color:PIE[i%PIE.length]}}))}]});
   const fxOther=fxData.find(r=>r.detail);
-  el("fx-note").textContent = fxOther ? `${fxOther.k} ?곸꽭: ${fxOther.detail}` : "";
+  el("fx-note").textContent = fxOther ? `${fxOther.k} 상세: ${fxOther.detail}` : "";
 
   chart("c-warr", donut(o.warranty));
 
@@ -242,20 +242,20 @@ function loadAS(){
   const narrow = window.innerWidth < 620;
   chart("c-monthly",{grid:{left:52,right:narrow?46:70,top:34,bottom:26},tooltip:{trigger:"axis"},
     legend:{...LEG,type:"scroll",top:0,itemWidth:14,itemHeight:8,textStyle:{color:TXT,fontSize:11}},
-    xAxis:{type:"category",data:mo.map(x=>x+"??),...AX,axisLabel:{color:TXT,fontSize:11}},
-    yAxis:[{type:"value",name:"嫄댁닔",...AX,nameTextStyle:{color:TXT,fontSize:10}},
-           {type:"value",name:"AS留ㅼ텧",...AX,splitLine:{show:false},nameTextStyle:{color:TXT,fontSize:10},
-            axisLabel:{color:TXT,fontSize:10,formatter:v=>v<=0?"0":v>=1e8?(v/1e8)+"??:Math.round(v/1e6)+"諛깅쭔"}}],
+    xAxis:{type:"category",data:mo.map(x=>x+"월"),...AX,axisLabel:{color:TXT,fontSize:11}},
+    yAxis:[{type:"value",name:"건수",...AX,nameTextStyle:{color:TXT,fontSize:10}},
+           {type:"value",name:"AS매출",...AX,splitLine:{show:false},nameTextStyle:{color:TXT,fontSize:10},
+            axisLabel:{color:TXT,fontSize:10,formatter:v=>v<=0?"0":v>=1e8?(v/1e8)+"억":Math.round(v/1e6)+"백만"}}],
     series:[...orgs.map((org)=>({name:orgLabel(org),type:"bar",barMaxWidth:11,barGap:"25%",
         data:mo.map(x=>m.find(r=>r.month===x&&r.org===org)?.n||0),
         itemStyle:{color:PAL[orgRank(org)%PAL.length],borderRadius:[3,3,0,0]}})),
-      {name:"AS留ㅼ텧",type:"line",yAxisIndex:1,smooth:true,symbolSize:5,itemStyle:{color:"#fbbf24"},
+      {name:"AS매출",type:"line",yAxisIndex:1,smooth:true,symbolSize:5,itemStyle:{color:"#fbbf24"},
         data:mo.map(x=>tr.filter(r=>r.month===x).reduce((s,r)=>s+Number(r.value||0),0))}]});
 
   const bm = SNAPSHOT.as_bymodel.value || SNAPSHOT.as_bymodel;
   chart("c-bymodel",{grid:{left:120,right:52,top:8,bottom:18},
     tooltip:{trigger:"axis",axisPointer:{type:"shadow"},
-      formatter:p=>`${p[0].name}<br/>嫄댁닔 ${num(p[0].value)}<br/>?좎긽 ${num(bm[p[0].dataIndex].paid_n)}嫄?},
+      formatter:p=>`${p[0].name}<br/>건수 ${num(p[0].value)}<br/>유상 ${num(bm[p[0].dataIndex].paid_n)}건`},
     xAxis:{type:"value",...AX,axisLabel:{show:false},splitLine:{show:false}},
     yAxis:{type:"category",...AX,inverse:true,
       axisLabel:{color:TXT,interval:0,fontSize:10.5,width:112,overflow:"truncate"},
@@ -266,12 +266,12 @@ function loadAS(){
 
   const rp = SNAPSHOT.as_repeat.value || SNAPSHOT.as_repeat;
   el("t-repeat").innerHTML =
-    "<tr><th>?쒕━?쇰쾲??/th><th>紐⑤뜽</th><th>?</th><th class='num'>AS 嫄댁닔</th><th>理쒓렐 異쒗븯泥?/th></tr>" +
+    "<tr><th>시리얼번호</th><th>모델</th><th>팀</th><th class='num'>AS 건수</th><th>최근 출하처</th></tr>" +
     rp.map(r=>`<tr><td>${esc(r.serial_no)}</td><td>${esc(r.model)}</td><td>${esc(orgLabel(r.org))}</td>
       <td class="num">${r.n}</td><td>${esc(r.last_site)}</td></tr>`).join("");
 }
 
-// ========== 二쇰퀎 ?ㅼ쟻 ==========
+// ========== 주별 실적 ==========
 function metricSeries(key){
   const tr = SNAPSHOT[key].value || SNAPSHOT[key];
   const mo=[...new Set(tr.map(r=>r.month))].sort((a,b)=>a-b);
@@ -282,9 +282,9 @@ function lineChart(id, s, fmt){
   chart(id,{grid:{left:58,right:16,top:30,bottom:26},
     tooltip:{trigger:"axis",valueFormatter:fmt},
     legend:{...LEG,type:"scroll",top:0,itemWidth:14,itemHeight:8,textStyle:{color:TXT,fontSize:11}},
-    xAxis:{type:"category",data:s.mo.map(x=>x+"??),...AX,axisLabel:{color:TXT,fontSize:11}},
+    xAxis:{type:"category",data:s.mo.map(x=>x+"월"),...AX,axisLabel:{color:TXT,fontSize:11}},
     yAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,
-      formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"??:v>=1e6?(v/1e6).toFixed(0)+"諛깅쭔":num(v)}},
+      formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"억":v>=1e6?(v/1e6).toFixed(0)+"백만":num(v)}},
     series:s.tm.map(x=>({name:teamLabel(x),type:"line",smooth:true,symbolSize:5,
       itemStyle:{color:PAL[orgRank(x)%PAL.length]},
       data:s.mo.map(mm=>s.val(mm,x))}))});
@@ -292,7 +292,7 @@ function lineChart(id, s, fmt){
 function loadWeeklyInit(){
   const rev = metricSeries("trend_revenue");
   if(!rev.mo.length){
-    el("trend-note").textContent = "二쇨컙蹂닿퀬(二쇨컙 ?ㅼ쟻) ?곗씠?곌? ???ㅻ깄?룹뿉???놁뒿?덈떎.";
+    el("trend-note").textContent = "주간보고(주간 실적) 데이터가 이 스냅샷에는 없습니다.";
     el("wk-cards").innerHTML=""; el("t-weekly").innerHTML=""; return;
   }
   el("trend-note").textContent="";
@@ -303,58 +303,58 @@ function loadWeeklyInit(){
   const ytd = ["D","M","K"].reduce((a,x)=>a+sum(x),0);
   const lastTot = ["D","M","K"].reduce((a,x)=>a+rev.val(lastM,x),0);
   el("wk-cards").innerHTML = [
-    [`${lastM}??AS留ㅼ텧`, won(lastTot), "D=二쇨컙蹂닿퀬 쨌 M쨌K=?듯빀?쒗듃"],
-    ["???꾧퀎 AS留ㅼ텧", won(ytd), `1~${lastM}??],
-    [`${lastM}???쒕퉬??, num(["D","M","K"].reduce((a,x)=>a+svc.val(lastM,x),0))+"嫄?, ""],
-    [`${lastM}??Inbound`, num(["D","M","K"].reduce((a,x)=>a+inb.val(lastM,x),0))+"嫄?, ""],
+    [`${lastM}월 AS매출`, won(lastTot), "D=주간보고 · M·K=통합시트"],
+    ["연 누계 AS매출", won(ytd), `1~${lastM}월`],
+    [`${lastM}월 서비스`, num(["D","M","K"].reduce((a,x)=>a+svc.val(lastM,x),0))+"건", ""],
+    [`${lastM}월 Inbound`, num(["D","M","K"].reduce((a,x)=>a+inb.val(lastM,x),0))+"건", ""],
   ].map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="s">${c[2]}</div></div>`).join("");
 
   lineChart("c-trend", rev, v=>won(v));
   const cumVal = (mm,x)=>rev.mo.filter(k=>k<=mm).reduce((a,k)=>a+rev.val(k,x),0);
   lineChart("c-trend-cum", {mo:rev.mo, tm:rev.tm, val:cumVal}, v=>won(v));
-  lineChart("c-svc", svc, v=>num(v)+"嫄?);
-  lineChart("c-inb", inb, v=>num(v)+"嫄?);
+  lineChart("c-svc", svc, v=>num(v)+"건");
+  lineChart("c-inb", inb, v=>num(v)+"건");
 
-  const cell = (v,c)=>`<td class="num">${won(v)}<br><span class="muted" style="font-size:11px">?꾧퀎 ${won(c)}</span></td>`;
+  const cell = (v,c)=>`<td class="num">${won(v)}<br><span class="muted" style="font-size:11px">누계 ${won(c)}</span></td>`;
   el("t-weekly").innerHTML =
-    "<tr><th>??/th><th class='num'>D Tech<br><span class='muted' style='font-weight:400;font-size:11px'>?뱀썡 / ?꾧퀎</span></th>"
-    + "<th class='num'>M Tech<br><span class='muted' style='font-weight:400;font-size:11px'>?뱀썡 / ?꾧퀎</span></th>"
-    + "<th class='num'>K Tech<br><span class='muted' style='font-weight:400;font-size:11px'>?뱀썡 / ?꾧퀎</span></th>"
-    + "<th class='num'>?⑷퀎<br><span class='muted' style='font-weight:400;font-size:11px'>?뱀썡 / ?꾧퀎</span></th></tr>" +
+    "<tr><th>월</th><th class='num'>D Tech<br><span class='muted' style='font-weight:400;font-size:11px'>당월 / 누계</span></th>"
+    + "<th class='num'>M Tech<br><span class='muted' style='font-weight:400;font-size:11px'>당월 / 누계</span></th>"
+    + "<th class='num'>K Tech<br><span class='muted' style='font-weight:400;font-size:11px'>당월 / 누계</span></th>"
+    + "<th class='num'>합계<br><span class='muted' style='font-weight:400;font-size:11px'>당월 / 누계</span></th></tr>" +
     rev.mo.map(mm=>{const d=rev.val(mm,"D"),m=rev.val(mm,"M"),k=rev.val(mm,"K");
       const cd=cumVal(mm,"D"),cm=cumVal(mm,"M"),ck=cumVal(mm,"K");
-      return `<tr><td>${mm}??/td>${cell(d,cd)}${cell(m,cm)}${cell(k,ck)}${cell(d+m+k,cd+cm+ck)}</tr>`;}).join("")
-    + `<tr><td><b>???꾧퀎</b></td><td class="num"><b>${won(sum("D"))}</b></td><td class="num"><b>${won(sum("M"))}</b></td>
+      return `<tr><td>${mm}월</td>${cell(d,cd)}${cell(m,cm)}${cell(k,ck)}${cell(d+m+k,cd+cm+ck)}</tr>`;}).join("")
+    + `<tr><td><b>연 누계</b></td><td class="num"><b>${won(sum("D"))}</b></td><td class="num"><b>${won(sum("M"))}</b></td>
         <td class="num"><b>${won(sum("K"))}</b></td><td class="num"><b>${won(ytd)}</b></td></tr>`;
 }
 
-// ========== 吏??==========
+// ========== 지도 ==========
 let worldReady=false, krReady=false, mapDataLoaded=false;
 const KR_MAP = {
-  "?쒖슱":"?쒖슱?밸퀎??,"寃쎄린":"寃쎄린??,"?몄쿇":"?몄쿇愿묒뿭??,"媛뺤썝":"媛뺤썝??,
-  "異⑸턿":"異⑹껌遺곷룄","異⑸궓":"異⑹껌?⑤룄","???:"??꾧킅??떆","?몄쥌":"?몄쥌?밸퀎?먯튂??,
-  "?꾨턿":"?꾨씪遺곷룄","?꾨궓":"?꾨씪?⑤룄","愿묒＜":"愿묒＜愿묒뿭??,
-  "寃쎈턿":"寃쎌긽遺곷룄","寃쎈궓":"寃쎌긽?⑤룄","?援?:"?援ш킅??떆","?몄궛":"?몄궛愿묒뿭??,"遺??:"遺?곌킅??떆",
-  "?쒖＜":"?쒖＜?밸퀎?먯튂??
+  "서울":"서울특별시","경기":"경기도","인천":"인천광역시","강원":"강원도",
+  "충북":"충청북도","충남":"충청남도","대전":"대전광역시","세종":"세종특별자치시",
+  "전북":"전라북도","전남":"전라남도","광주":"광주광역시",
+  "경북":"경상북도","경남":"경상남도","대구":"대구광역시","울산":"울산광역시","부산":"부산광역시",
+  "제주":"제주특별자치도"
 };
 function loadMap(){
   if(mapDataLoaded){ Object.values(charts).forEach(c=>c.resize()); return; }
   mapDataLoaded = true;
 
   const d = SNAPSHOT.as_countries;
-  el("wm-note").textContent = "嫄댁닔 = ?듯빀?쒗듃 湲곗? 쨌 梨꾧텒 泥댄겕湲?= 留ㅼ텧梨꾧텒 以?泥댄겕湲덉븸 (?먰솕?섏궛)";
+  el("wm-note").textContent = "건수 = 통합시트 기준 · 채권 체크금 = 매출채권 중 체크금액 (원화환산)";
   el("t-country").innerHTML =
-    "<tr><th>援??</th><th>ISO3</th><th>沅뚯뿭</th><th class='num'>AS 嫄댁닔</th><th class='num'>梨꾧텒 泥댄겕湲?/th><th class='num'>誘명쉶?섏옍??/th></tr>" +
+    "<tr><th>국가</th><th>ISO3</th><th>권역</th><th class='num'>AS 건수</th><th class='num'>채권 체크금</th><th class='num'>미회수잔액</th></tr>" +
     d.rows.map(r=>`<tr><td>${esc(r.country)}</td><td>${r.iso3||"-"}</td><td>${esc(r.region_group)}</td>
       <td class="num">${num(r.n)}</td><td class="num">${r.revenue_krw?won(r.revenue_krw):"-"}</td>
       <td class="num">${r.balance_krw?won(r.balance_krw):"-"}</td></tr>`).join("");
   try{ echarts.registerMap("world", WORLD_GEO); worldReady=true; }
-  catch(e){ el("wm-note").textContent="?멸퀎 吏??濡쒕뱶 ?ㅽ뙣: "+e; }
+  catch(e){ el("wm-note").textContent="세계 지도 로드 실패: "+e; }
   const pts=d.rows.filter(r=>r.lat!=null).map(r=>({name:r.country,value:[+r.lng,+r.lat,r.n],krw:r.revenue_krw}));
   const mx=Math.max(1,...pts.map(p=>p.value[2]));
   chart("c-worldmap", worldReady ? {
-    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>AS ${num(p.value[2])}嫄?
-      + (p.data.krw?`<br/>梨꾧텒 泥댄겕湲?${won(p.data.krw)}`:"")},
+    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>AS ${num(p.value[2])}건`
+      + (p.data.krw?`<br/>채권 체크금 ${won(p.data.krw)}`:"")},
     geo:{map:"world",roam:true,silent:true,layoutCenter:["50%","54%"],layoutSize:"138%",
       itemStyle:{areaColor:"#243044",borderColor:"#475569"}},
     series:[{type:"effectScatter",coordinateSystem:"geo",data:pts,
@@ -369,18 +369,18 @@ function loadMap(){
   kr.rows.forEach(r=>{ const nm=KR_MAP[r.region]||null; if(!nm) return;
     agg[nm]=agg[nm]||{n:0,krw:0}; agg[nm].n+=r.n; agg[nm].krw+=Number(r.krw||0); });
   el("t-krregion").innerHTML =
-    "<tr><th>吏??/th><th>?</th><th class='num'>嫄댁닔</th><th class='num'>?섎━留ㅼ텧</th></tr>" +
+    "<tr><th>지역</th><th>팀</th><th class='num'>건수</th><th class='num'>수리매출</th></tr>" +
     [...kr.rows].sort((a,b)=>orgRank(a.org)-orgRank(b.org)||b.n-a.n)
       .map(r=>`<tr><td>${esc(r.region)}</td><td>${esc(orgLabel(r.org))}</td>
       <td class="num">${num(r.n)}</td><td class="num">${won(r.krw)}</td></tr>`).join("");
   el("kr-note").textContent = kr.filled < kr.domestic_total
-    ? `援?궡 ${num(kr.domestic_total)}嫄?以?${num(kr.filled)}嫄?吏??留ㅽ븨??(?섎㉧吏??誘명솗??吏??諛섏쁺)` : "";
+    ? `국내 ${num(kr.domestic_total)}건 중 ${num(kr.filled)}건 지역 매핑됨 (나머지는 미확인 지역 반영)` : "";
   try{ echarts.registerMap("korea", KOREA_GEO); krReady=true; }
-  catch(e){ el("kr-note").textContent += "  ?쒓뎅 吏??濡쒕뱶 ?ㅽ뙣: "+e; }
+  catch(e){ el("kr-note").textContent += "  한국 지도 로드 실패: "+e; }
   const kdata=Object.entries(agg).map(([name,v])=>({name,value:v.n,krw:v.krw}));
   const kmx=Math.max(1,...kdata.map(d=>d.value));
   chart("c-krmap", krReady ? {
-    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>AS ${num(p.value||0)}嫄?+ (p.data?`<br/>?섎━鍮?${won(p.data.krw)}`:"")},
+    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>AS ${num(p.value||0)}건`+ (p.data?`<br/>수리비 ${won(p.data.krw)}`:"")},
     visualMap:{min:0,max:kmx,right:12,bottom:12,calculable:true,
       inRange:{color:["#334769","#6366f1","#c7d2fe"]},...LEG},
     series:[{type:"map",map:"korea",roam:true,data:kdata,layoutCenter:["50%","52%"],layoutSize:"118%",
@@ -391,22 +391,22 @@ function loadMap(){
       series:[{type:"bar",data:kdata.map(d=>d.value),itemStyle:{color:"#6366f1"}}]});
 }
 
-// ========== ?곗폆 議고쉶 (?대씪?댁뼵???꾪꽣) ==========
+// ========== 티켓 조회 (클라이언트 필터) ==========
 let tkState={org:"",line:"",month:"",warr:"",q:""}, tkTimer;
 function initTickets(){
   const f = SNAPSHOT.as_filters;
   const orgsOrdered = [...f.orgs].sort((a,b)=>orgRank(a)-orgRank(b));
   el("tk-org").innerHTML = [
-    `<span class="chip on" data-v="">?꾩껜</span>`,
+    `<span class="chip on" data-v="">전체</span>`,
     ...orgsOrdered.map(o=>`<span class="chip" data-v="${o}">${orgLabel(o)}</span>`)].join("");
   el("tk-org").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
     el("tk-org").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===c));
     tkState.org=c.dataset.v; loadTickets();
   });
-  el("tk-line").innerHTML = '<option value="">?꾩껜 ?λ퉬援?/option>' +
+  el("tk-line").innerHTML = '<option value="">전체 장비군</option>' +
     f.product_lines.map(l=>`<option>${l}</option>`).join("");
-  el("tk-month").innerHTML = '<option value="">?꾩껜 ??議곗튂??</option>' +
-    f.months.map(m=>`<option value="${m}">${m}??議곗튂)</option>`).join("");
+  el("tk-month").innerHTML = '<option value="">전체 월(조치일)</option>' +
+    f.months.map(m=>`<option value="${m}">${m}월(조치)</option>`).join("");
   ["tk-line","tk-month","tk-warr"].forEach(id=> el(id).onchange = e=>{
     tkState[id==="tk-line"?"line":id==="tk-month"?"month":"warr"]=e.target.value; loadTickets(); });
   el("tk-q").oninput = e=>{ clearTimeout(tkTimer); tkState.q=e.target.value.trim();
@@ -429,10 +429,10 @@ function filterTickets(){
 function loadTickets(){
   const filtered = filterTickets();
   const shown = filtered.slice(0, 2000);
-  el("tk-count").textContent = `${num(shown.length)} / 珥?${num(filtered.length)}嫄? + (filtered.length>2000?" (?곸쐞 2000)":"");
+  el("tk-count").textContent = `${num(shown.length)} / 총 ${num(filtered.length)}건` + (filtered.length>2000?" (상위 2000)":"");
   el("t-tickets").innerHTML =
-    "<tr><th>議곗튂??/th><th>?묒닔??/th><th>?</th><th>?λ퉬援?/th><th>異쒗븯泥?/th><th>吏??/th><th>紐⑤뜽</th><th>蹂댁쬆</th>"+
-    "<th>利앹긽</th><th>?먯씤</th><th>議곗튂</th><th class='num'>?섎━鍮?/th></tr>" +
+    "<tr><th>조치일</th><th>접수일</th><th>팀</th><th>장비군</th><th>출하처</th><th>지역</th><th>모델</th><th>보증</th>"+
+    "<th>증상</th><th>원인</th><th>조치</th><th class='num'>수리비</th></tr>" +
     shown.map(r=>`<tr>
       <td>${(r.action_date||"").slice(0,10)}</td><td class="muted">${(r.received_date||"").slice(0,10)}</td><td>${esc(orgLabel(r.org))}</td><td>${esc(r.product_line)}</td>
       <td title="${esc(r.shipped_to)}">${esc((r.shipped_to||"").slice(0,18))}</td>
@@ -443,29 +443,29 @@ function loadTickets(){
     </tr>`).join("");
 }
 
-// ========== 梨꾧텒 ==========
-const teamName = t => ({D:"D Tech",M:"M Tech",K:"K Tech"}[t]||t||"湲고?");
+// ========== 채권 ==========
+const teamName = t => ({D:"D Tech",M:"M Tech",K:"K Tech"}[t]||t||"기타");
 function loadRecv(){
   const d = SNAPSHOT.recv_overview;
   const c = d.cards||{};
   const rate = c.bal_krw ? (c.overdue_krw*100/c.bal_krw) : 0;
   el("recv-cards").innerHTML=[
-    ["梨꾧텒 ?붿븸(?먰솕?섏궛)", won(c.bal_krw), `泥?뎄 ${won(c.billed_krw)} 以?誘명쉶??],
-    ["?곗껜쨌誘명쉶??湲덉븸", won(c.overdue_krw), rate.toFixed(0)+"% 쨌 誘명쉶?섍굔 "+num(c.open_n)],
-    ["?κ린誘몄닔 湲덉븸", c.long_krw?won(c.long_krw):"-", c.long_krw?"援?궡 <?κ린誘몄닔> 援щ텇":"援?궡 梨꾧텒 誘몃벑濡?],
-    ["嫄곕옒泥???, num(c.entities), "?붿븸 蹂댁쑀 湲곗?"],
+    ["채권 잔액(원화환산)", won(c.bal_krw), `청구 ${won(c.billed_krw)} 중 미회수`],
+    ["연체·미회수 금액", won(c.overdue_krw), rate.toFixed(0)+"% · 미회수건 "+num(c.open_n)],
+    ["장기미수 금액", c.long_krw?won(c.long_krw):"-", c.long_krw?"국내 <장기미수> 구분":"국내 채권 미등록"],
+    ["거래처 수", num(c.entities), "잔액 보유 기준"],
   ].map(x=>`<div class="card"><div class="k">${x[0]}</div><div class="v">${x[1]}</div><div class="s">${x[2]}</div></div>`).join("");
 
   const bt=d.by_team||[];
   chart("c-recv-team",{grid:{left:70,right:60,top:10,bottom:24},tooltip:{trigger:"axis",axisPointer:{type:"shadow"},
       valueFormatter:won},
-    legend:{...LEG,top:0,itemWidth:12,itemHeight:8,textStyle:{color:TXT,fontSize:11},data:["?뺤긽","?곗껜쨌誘명쉶??,"?κ린誘몄닔"]},
-    xAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"??:Math.round(v/1e6)+"諛깅쭔"}},
+    legend:{...LEG,top:0,itemWidth:12,itemHeight:8,textStyle:{color:TXT,fontSize:11},data:["정상","연체·미회수","장기미수"]},
+    xAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"억":Math.round(v/1e6)+"백만"}},
     yAxis:{type:"category",...AX,inverse:true,data:bt.map(x=>teamName(x.team))},
     series:[
-      {name:"?뺤긽",type:"bar",stack:"x",data:bt.map(x=>Math.max((x.bal_krw||0)-(x.overdue_krw||0),0)),itemStyle:{color:"#38dcf0"}},
-      {name:"?곗껜쨌誘명쉶??,type:"bar",stack:"x",data:bt.map(x=>Math.max((x.overdue_krw||0)-(x.long_krw||0),0)),itemStyle:{color:"#f87171"}},
-      {name:"?κ린誘몄닔",type:"bar",stack:"x",data:bt.map(x=>x.long_krw||0),itemStyle:{color:"#7f1d1d"}},
+      {name:"정상",type:"bar",stack:"x",data:bt.map(x=>Math.max((x.bal_krw||0)-(x.overdue_krw||0),0)),itemStyle:{color:"#38dcf0"}},
+      {name:"연체·미회수",type:"bar",stack:"x",data:bt.map(x=>Math.max((x.overdue_krw||0)-(x.long_krw||0),0)),itemStyle:{color:"#f87171"}},
+      {name:"장기미수",type:"bar",stack:"x",data:bt.map(x=>x.long_krw||0),itemStyle:{color:"#7f1d1d"}},
       {name:"",type:"bar",stack:"x",data:bt.map(()=>0),tooltip:{show:false},
         label:{show:true,position:"right",color:TXT,fontSize:10,formatter:p=>won(bt[p.dataIndex].bal_krw)}}]});
 
@@ -474,19 +474,19 @@ function loadRecv(){
 
   const ag=d.aging||[];
   chart("c-recv-aging",{grid:{left:56,right:20,top:16,bottom:24},tooltip:{trigger:"axis",valueFormatter:won},
-    xAxis:{type:"category",data:ag.map(x=>x.bucket+"??),...AX,axisLabel:{color:TXT,fontSize:11}},
-    yAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"??:Math.round(v/1e6)+"諛깅쭔"}},
+    xAxis:{type:"category",data:ag.map(x=>x.bucket+"일"),...AX,axisLabel:{color:TXT,fontSize:11}},
+    yAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"억":Math.round(v/1e6)+"백만"}},
     series:[{type:"bar",barMaxWidth:34,data:ag.map(x=>x.bal_krw),
       itemStyle:{color:p=>["0-30","31-60"].includes(ag[p.dataIndex].bucket)?"#38dcf0":ag[p.dataIndex].bucket==="61-90"?"#fbbf24":"#f87171",borderRadius:[3,3,0,0]},
-      label:{show:true,position:"top",color:TXT,fontSize:10,formatter:p=>ag[p.dataIndex].n+"嫄?}}]});
+      label:{show:true,position:"top",color:TXT,fontSize:10,formatter:p=>ag[p.dataIndex].n+"건"}}]});
 
   const stBadge = r => r.long_overdue
-      ? '<span style="background:#7f1d1d;color:#fecaca;padding:1px 7px;border-radius:9px;font-size:11px">?κ린誘몄닔</span>'
+      ? '<span style="background:#7f1d1d;color:#fecaca;padding:1px 7px;border-radius:9px;font-size:11px">장기미수</span>'
       : r.overdue
-      ? '<span style="background:#7f2d2d;color:#fca5a5;padding:1px 7px;border-radius:9px;font-size:11px">?곗껜</span>'
-      : '<span class="muted">?뺤긽</span>';
+      ? '<span style="background:#7f2d2d;color:#fca5a5;padding:1px 7px;border-radius:9px;font-size:11px">연체</span>'
+      : '<span class="muted">정상</span>';
   el("t-recv").innerHTML =
-    "<tr><th>嫄곕옒泥?/th><th>?</th><th>梨꾨꼸</th><th>援??</th><th class='num'>嫄?/th><th class='num'>湲덉븸(??</th><th>?곹깭</th></tr>" +
+    "<tr><th>거래처</th><th>팀</th><th>채널</th><th>국가</th><th class='num'>건</th><th class='num'>금액(원)</th><th>상태</th></tr>" +
     (d.top||[]).map(r=>`<tr${r.long_overdue?' style="background:rgba(127,29,29,.22)"':''}>
       <td>${esc(r.entity)}</td><td>${esc(teamName(r.team))}</td><td>${esc(r.channel||"")}</td>
       <td>${esc(r.country||"")}</td><td class="num">${num(r.n)}</td>
@@ -496,7 +496,7 @@ function loadRecv(){
 }
 
 // ========== boot ==========
-el("meta").textContent = "?ㅻ깄??罹≪쿂: " + GENERATED_AT + " 쨌 ?ㅼ떆媛??쒕쾭 ?곌껐 ?놁쓬 (?쎄린 ?꾩슜)";
+el("meta").textContent = "스냅샷 캡처: " + GENERATED_AT + " · 실시간 서버 연결 없음 (읽기 전용)";
 loadAS(); loadWeeklyInit(); initTickets();
 </script>
 </body>
