@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
-from .routers import annotations, asdash, dashboard, gsheet, ingest, maps, plan, recv
+from .routers import annotations, asdash, dashboard, export, gsheet, ingest, maps, plan, recv
 
 app = FastAPI(title="TS본부 운영 대시보드 API", version="0.1.0")
 
@@ -22,6 +22,7 @@ app.include_router(gsheet.router)
 app.include_router(annotations.router)
 app.include_router(plan.router)
 app.include_router(recv.router)
+app.include_router(export.router)
 
 
 @app.get("/api/health")

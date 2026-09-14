@@ -1,0 +1,503 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TS蹂몃? ?댁쁺 ??쒕낫??(?ㅻ깄??</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --panel2:#2b3a52; --line:#3b4a63;
+    --ink:#f1f5f9; --muted:#c3cddd; --dim:#9aa7bd; --accent:#7c85f5; --accent2:#38dcf0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Malgun Gothic",system-ui,sans-serif;font-size:14px}
+  header{padding:14px 24px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:17px;margin:0;font-weight:700}
+  header .meta{color:var(--dim);font-size:12px;margin-left:auto}
+  .snapbadge{background:#7c3aed;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  nav{display:flex;gap:4px;padding:12px 24px 0;flex-wrap:wrap}
+  nav button{background:none;border:0;color:var(--muted);padding:8px 14px;
+    border-radius:8px 8px 0 0;cursor:pointer;font-size:14px}
+  nav button:hover{color:var(--ink)}
+  nav button.on{background:var(--panel);color:var(--ink);font-weight:700}
+  main{padding:16px 24px 48px}
+  .grid{display:grid;gap:16px}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .card .k{color:var(--muted);font-size:12px;margin-bottom:6px}
+  .card .v{font-size:22px;font-weight:700;letter-spacing:-.5px}
+  .card .s{color:var(--dim);font-size:12px;margin-top:4px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:16px}
+  .panel h2{font-size:14px;margin:0 0 12px;font-weight:700;color:var(--ink)}
+  .chart{width:100%;height:340px}
+  .chart.tall{height:480px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{text-align:left;padding:6px 9px;border-bottom:1px solid var(--line);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;max-width:280px}
+  td{color:var(--ink)}
+  th{color:var(--muted);font-weight:700;position:sticky;top:0;background:var(--panel);z-index:1}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .scroll{max-height:520px;overflow:auto}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:820px){.row2{grid-template-columns:1fr}}
+  select,input[type=search]{background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+    padding:6px 10px;border-radius:8px;font-size:13px}
+  input[type=search]{width:240px;max-width:100%}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+  .chip{background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+    padding:4px 11px;border-radius:999px;cursor:pointer;font-size:12.5px}
+  .chip:hover{color:var(--ink)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  .err{color:#fcd34d;font-size:12px;margin-top:8px}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>TS蹂몃? ?댁쁺 ??쒕낫??/h1>
+  <span class="snapbadge">?ㅻ깄??/span>
+  <span class="meta" id="meta">遺덈윭?ㅻ뒗 以묅?/span>
+</header>
+<nav>
+  <button data-tab="as" class="on">AS 遺꾩꽍</button>
+  <button data-tab="weekly">二쇰퀎 ?ㅼ쟻</button>
+  <button data-tab="map">吏??/button>
+  <button data-tab="tickets">AS ?대젰</button>
+  <button data-tab="recv">梨꾧텒</button>
+</nav>
+<main>
+  <section id="tab-as">
+    <div class="grid cards" id="as-cards"></div>
+    <div class="panel"><h2>?붾퀎 AS 嫄댁닔쨌?섎━鍮?援ш??쒗듃, 議곗튂??湲곗?) 쨌 AS留ㅼ텧(D=二쇨컙蹂닿퀬, M쨌K=?듯빀?쒗듃 議곗튂?? K+?좎?蹂댁닔)</h2><div id="c-monthly" class="chart"></div></div>
+    <div class="row2">
+      <div class="panel"><h2>?蹂?AS 嫄댁닔 鍮꾩쨷</h2><div id="c-byline" class="chart" style="height:240px"></div></div>
+      <div class="panel"><h2>蹂댁쬆 (臾댁긽/?좎긽)</h2><div id="c-warr" class="chart" style="height:240px"></div></div>
+    </div>
+    <div class="row2">
+      <div class="panel"><h2>遺덈웾 援щ텇 <span class="muted" style="font-weight:400;font-size:12px">쨌 3% 誘몃쭔 臾띠쓬</span></h2><div id="c-fix" class="chart" style="height:410px"></div><div id="fx-note" class="muted" style="font-size:11px;line-height:1.5;padding:4px 4px 0"></div></div>
+      <div class="panel"><h2>?λ퉬 紐⑤뜽 TOP 10 (嫄댁닔)</h2><div id="c-bymodel" class="chart" style="height:410px"></div></div>
+    </div>
+    <div class="panel"><h2>諛섎났 AS ?λ퉬 (媛숈? ?쒕━?쇰쾲??3嫄??댁긽)</h2>
+      <div class="scroll"><table id="t-repeat"></table></div></div>
+  </section>
+
+  <section id="tab-weekly" hidden>
+    <div class="grid cards" id="wk-cards"></div>
+    <div class="panel"><h2>?蹂??붾퀎 AS留ㅼ텧 異붿씠 (D=二쇨컙蹂닿퀬 쨌 M쨌K=?듯빀?쒗듃 議곗튂??쨌 K???좎?蹂댁닔 ?ы븿)</h2>
+      <div id="c-trend" class="chart"></div><div id="trend-note" class="err"></div></div>
+    <div class="panel"><h2>?蹂??꾧퀎 AS留ㅼ텧 (1?붾????뱀썡 ?꾩쟻)</h2>
+      <div id="c-trend-cum" class="chart" style="height:300px"></div></div>
+    <div class="row2">
+      <div class="panel"><h2>?붾퀎 ?쒕퉬??嫄댁닔</h2><div id="c-svc" class="chart" style="height:300px"></div></div>
+      <div class="panel"><h2>?붾퀎 Inbound</h2><div id="c-inb" class="chart" style="height:300px"></div></div>
+    </div>
+    <div class="panel"><h2>?붾퀎 ?곸꽭</h2><div class="scroll"><table id="t-weekly"></table></div></div>
+  </section>
+
+  <section id="tab-map" hidden>
+    <div class="panel"><h2>?댁쇅 AS 援??蹂?遺꾪룷 (D Tech 쨌 M Tech) 쨌 ???ш린 = 嫄댁닔</h2>
+      <div id="c-worldmap" class="chart tall"></div><div id="wm-note" class="err"></div></div>
+    <div class="panel"><h2>援?궡 AS 吏??퀎 遺꾪룷 (K Tech 쨌 蹂몃?)</h2>
+      <div id="c-krmap" class="chart tall"></div><div id="kr-note" class="err"></div></div>
+    <div class="row2">
+      <div class="panel"><h2>?댁쇅 援??蹂??곸꽭</h2><div class="scroll"><table id="t-country"></table></div></div>
+      <div class="panel"><h2>援?궡 吏??퀎 ?곸꽭</h2><div class="scroll"><table id="t-krregion"></table></div></div>
+    </div>
+  </section>
+
+  <section id="tab-tickets" hidden>
+    <div class="panel">
+      <h2>AS ?대젰 議고쉶 <span class="muted" id="tk-count"></span></h2>
+      <div class="chips" id="tk-org"></div>
+      <div class="chips">
+        <select id="tk-line"><option value="">?꾩껜 ?λ퉬援?/option></select>
+        <select id="tk-month"><option value="">?꾩껜 ??/option></select>
+        <select id="tk-warr"><option value="">臾댁긽+?좎긽</option><option>臾댁긽</option><option>?좎긽</option></select>
+        <input type="search" id="tk-q" placeholder="利앹긽쨌議곗튂쨌?먯씤쨌異쒗븯泥샕룸え?맞룹떆由ъ뼹踰덊샇 寃??/>
+      </div>
+      <div class="scroll"><table id="t-tickets"></table></div>
+    </div>
+  </section>
+
+  <section id="tab-recv" hidden>
+    <div class="grid cards" id="recv-cards"></div>
+    <div class="row2">
+      <div class="panel"><h2>?蹂?梨꾧텒 湲덉븸 (?먰솕?섏궛)</h2><div id="c-recv-team" class="chart" style="height:280px"></div></div>
+      <div class="panel"><h2>?듯솕蹂?湲덉븸</h2><div id="c-recv-cur" class="chart" style="height:280px"></div></div>
+    </div>
+    <div class="row2">
+      <div class="panel"><h2>?곹깭蹂?/h2><div id="c-recv-status" class="chart" style="height:280px"></div></div>
+      <div class="panel"><h2>?곗껜 寃쎄낵??(aging)</h2><div id="c-recv-aging" class="chart" style="height:280px"></div></div>
+    </div>
+    <div class="panel"><h2>嫄곕옒泥섎퀎 湲덉븸 (?蹂??곸쐞 15)</h2>
+      <div class="scroll"><table id="t-recv"></table></div>
+      <div class="muted" style="font-size:11px;padding:4px">?섏쑉: ?ъ뾽怨꾪쉷 怨좎젙(USD 1,380 / EUR 1,640 / JPY 9.4 / CNY 195) 쨌 異쒖쿂: ?듯빀?쒗듃 梨꾧텒 D/M/K</div></div>
+  </section>
+</main>
+
+<script>
+/*__ECHARTS_JS__*/
+</script>
+<script>
+const WORLD_GEO = /*__WORLD_JSON__*/;
+const KOREA_GEO = /*__KOREA_JSON__*/;
+const SNAPSHOT = /*__SNAPSHOT_JSON__*/;
+const GENERATED_AT = "__GENERATED_AT__";
+</script>
+<script>
+const won = (n) => "?? + Math.round(Number(n)||0).toLocaleString("ko-KR");
+const num = (n) => (Number(n)||0).toLocaleString("ko-KR");
+const el = (id) => document.getElementById(id);
+const esc = (s) => (s==null?"":String(s)).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const charts = {};
+function chart(id, opt){
+  if(!charts[id]) charts[id] = echarts.init(el(id));
+  charts[id].setOption(opt, true); charts[id].resize();
+}
+window.addEventListener("resize", () => Object.values(charts).forEach(c=>c.resize()));
+const TXT = "#cbd5e6";
+const AX = { textStyle:{color:TXT}, axisLabel:{color:TXT}, nameTextStyle:{color:TXT},
+  axisLine:{lineStyle:{color:"#4a5a76"}}, splitLine:{lineStyle:{color:"#26324a"}} };
+const LEG = { textStyle:{color:TXT} };
+const PAL = ["#818cf8","#38dcf0","#4ade80","#fbbf24","#f87171","#c084fc","#f472b6","#a3e635"];
+const PIE = ["#818cf8","#38dcf0","#4ade80","#fbbf24","#f472b6","#c084fc","#fb923c","#a3e635","#22d3ee","#f87171","#94a3b8"];
+const ORG_ORDER = ["D","M","K"];
+const ORG_NAME  = {D:"D Tech", M:"M Tech", K:"K Tech", "遺??:"K Tech"};
+const orgLabel  = (o) => ORG_NAME[o] || o;
+const orgRank   = (o) => { const i = ORG_ORDER.indexOf(o==="遺???"K":o); return i<0 ? 99 : i; };
+const teamLabel = (t) => ORG_NAME[t] || (t + " Tech");
+function donut(arr){return {tooltip:{trigger:"item"},legend:{bottom:0,...LEG},
+  series:[{type:"pie",radius:["45%","70%"],center:["50%","45%"],
+  label:{color:"#f1f5f9",formatter:"{b}\n{d}%"},
+  data:arr.map((r,i)=>({name:r.k,value:r.n,itemStyle:{color:PAL[i%PAL.length]}}))}]};}
+
+document.querySelectorAll("nav button").forEach(b=>{
+  b.onclick = () => {
+    document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on", x===b));
+    ["as","weekly","map","tickets","recv"].forEach(t=> el("tab-"+t).hidden = (t!==b.dataset.tab));
+    setTimeout(()=>Object.values(charts).forEach(c=>c.resize()), 40);
+    if(b.dataset.tab==="map") loadMap();
+    if(b.dataset.tab==="recv") loadRecv();
+  };
+});
+
+// ========== AS 遺꾩꽍 ==========
+function loadAS(){
+  const o = SNAPSHOT.as_overview;
+  const tr = SNAPSHOT.trend_revenue.value || SNAPSHOT.trend_revenue;
+  const asRevYtd = tr.reduce((s,r)=>s+Number(r.value||0),0);
+  const lastM = tr.length? Math.max(...tr.map(r=>r.month)) : null;
+  const repairSum = o.by_line.reduce((s,r)=>s+Number(r.krw||0),0);
+  el("as-cards").innerHTML = [
+    ["AS ?대젰 珥앷퀎", num(o.total), "?듯빀?쒗듃 湲곗? ?곗씠??],
+    ["?좎긽 鍮꾩쑉", ((o.warranty.find(w=>w.k==="?좎긽")?.n||0)*100/o.total).toFixed(1)+"%",
+      num(o.warranty.find(w=>w.k==="?좎긽")?.n||0)+"嫄??좎긽"],
+    ["???꾧퀎 AS留ㅼ텧", won(asRevYtd), lastM?`1~${lastM}??쨌 D=二쇨컙蹂닿퀬, M쨌K=?듯빀?쒗듃`:"二쇨컙蹂닿퀬 ?꾩슂"],
+    ["?섎━鍮??⑷퀎(?듯빀)", won(repairSum), "?듯빀?쒗듃 ?섎━鍮꾩슜 ??(D? 誘멸린??"],
+  ].map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="s">${c[2]}</div></div>`).join("");
+
+  const L=[...o.by_line].sort((a,b)=> orgRank(a.org)-orgRank(b.org));
+  chart("c-byline",{
+    tooltip:{trigger:"item",formatter:p=>{const l=L[p.dataIndex];
+      return `${p.name}<br/>嫄댁닔 ${num(l.n)} (${p.percent}%)<br/>?좎긽 ${num(l.paid_n)} (${(l.paid_n*100/l.n).toFixed(0)}%)`;}},
+    legend:{...LEG,orient:"vertical",right:12,top:"middle",
+      formatter:name=>{const l=L.find(x=>orgLabel(x.org)===name);
+        return l?`${name}  ${num(l.n)}嫄?쨌 ?좎긽 ${(l.paid_n*100/l.n).toFixed(0)}%`:name;}},
+    series:[{type:"pie",radius:["45%","72%"],center:["30%","52%"],
+      label:{show:true,color:TXT,fontSize:11,formatter:p=>`${p.name}\n${num(p.value)}嫄?${p.percent}%`},
+      labelLine:{show:true,length:8,length2:10},
+      data:L.map(l=>({name:orgLabel(l.org),value:l.n,
+        itemStyle:{color:PAL[orgRank(l.org)%PAL.length]}}))}]});
+
+  const fxAll=[...o.fix_class].filter(f=>f.k!=="(誘몄긽)").sort((a,b)=>b.n-a.n);
+  const fxThresh = o.total*0.03;
+  const fxBig = fxAll.filter(f=>f.n>=fxThresh);
+  const fxSmall = fxAll.filter(f=>f.n<fxThresh);
+  const fxData = fxBig.map(f=>({k:f.k,n:f.n}));
+  if(fxSmall.length) fxData.push({k:`洹몄쇅 ${fxSmall.length}醫?, n:fxSmall.reduce((s,f)=>s+f.n,0),
+                                  detail:fxSmall.map(f=>`${f.k} ${f.n}`).join(", ")});
+  const fxTotal = fxData.reduce((s,r)=>s+r.n,0);
+  chart("c-fix",{
+    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>${num(p.value)}嫄?(${p.percent}%)`
+      + (p.data.detail?`<br/><span style="color:#9aa7bd">${p.data.detail}</span>`:"")},
+    legend:{type:"plain",bottom:6,left:"center",width:"96%",...LEG,itemWidth:11,itemHeight:8,itemGap:10,
+      textStyle:{color:TXT,fontSize:10.5},
+      formatter:name=>{const d=fxData.find(x=>x.k===name);
+        return d?`${name} ${(d.n*100/fxTotal).toFixed(0)}%`:name;}},
+    series:[{type:"pie",radius:["40%","60%"],center:["50%","41%"],
+      label:{show:true,color:TXT,fontSize:11,formatter:p=>`${p.name} ${num(p.value)}嫄?${p.percent}%`},
+      labelLine:{show:true,length:10,length2:14},
+      minAngle:4,avoidLabelOverlap:true,
+      data:fxData.map((r,i)=>({name:r.k,value:r.n,detail:r.detail,itemStyle:{color:PIE[i%PIE.length]}}))}]});
+  const fxOther=fxData.find(r=>r.detail);
+  el("fx-note").textContent = fxOther ? `${fxOther.k} ?곸꽭: ${fxOther.detail}` : "";
+
+  chart("c-warr", donut(o.warranty));
+
+  const m = SNAPSHOT.as_monthly.value || SNAPSHOT.as_monthly;
+  const mo=[...new Set([...m.map(r=>r.month), ...tr.map(r=>r.month)])].filter(x=>x!=null).sort((a,b)=>a-b);
+  const orgs=[...new Set(m.map(r=>r.org))].sort((a,b)=>orgRank(a)-orgRank(b));
+  const narrow = window.innerWidth < 620;
+  chart("c-monthly",{grid:{left:52,right:narrow?46:70,top:34,bottom:26},tooltip:{trigger:"axis"},
+    legend:{...LEG,type:"scroll",top:0,itemWidth:14,itemHeight:8,textStyle:{color:TXT,fontSize:11}},
+    xAxis:{type:"category",data:mo.map(x=>x+"??),...AX,axisLabel:{color:TXT,fontSize:11}},
+    yAxis:[{type:"value",name:"嫄댁닔",...AX,nameTextStyle:{color:TXT,fontSize:10}},
+           {type:"value",name:"AS留ㅼ텧",...AX,splitLine:{show:false},nameTextStyle:{color:TXT,fontSize:10},
+            axisLabel:{color:TXT,fontSize:10,formatter:v=>v<=0?"0":v>=1e8?(v/1e8)+"??:Math.round(v/1e6)+"諛깅쭔"}}],
+    series:[...orgs.map((org)=>({name:orgLabel(org),type:"bar",barMaxWidth:11,barGap:"25%",
+        data:mo.map(x=>m.find(r=>r.month===x&&r.org===org)?.n||0),
+        itemStyle:{color:PAL[orgRank(org)%PAL.length],borderRadius:[3,3,0,0]}})),
+      {name:"AS留ㅼ텧",type:"line",yAxisIndex:1,smooth:true,symbolSize:5,itemStyle:{color:"#fbbf24"},
+        data:mo.map(x=>tr.filter(r=>r.month===x).reduce((s,r)=>s+Number(r.value||0),0))}]});
+
+  const bm = SNAPSHOT.as_bymodel.value || SNAPSHOT.as_bymodel;
+  chart("c-bymodel",{grid:{left:120,right:52,top:8,bottom:18},
+    tooltip:{trigger:"axis",axisPointer:{type:"shadow"},
+      formatter:p=>`${p[0].name}<br/>嫄댁닔 ${num(p[0].value)}<br/>?좎긽 ${num(bm[p[0].dataIndex].paid_n)}嫄?},
+    xAxis:{type:"value",...AX,axisLabel:{show:false},splitLine:{show:false}},
+    yAxis:{type:"category",...AX,inverse:true,
+      axisLabel:{color:TXT,interval:0,fontSize:10.5,width:112,overflow:"truncate"},
+      data:bm.map(r=>r.product_model)},
+    series:[{type:"bar",barWidth:13,data:bm.map(r=>r.n),
+      itemStyle:{color:"#4ade80",borderRadius:3},
+      label:{show:true,position:"right",color:TXT,fontSize:11,formatter:p=>num(p.value)}}]});
+
+  const rp = SNAPSHOT.as_repeat.value || SNAPSHOT.as_repeat;
+  el("t-repeat").innerHTML =
+    "<tr><th>?쒕━?쇰쾲??/th><th>紐⑤뜽</th><th>?</th><th class='num'>AS 嫄댁닔</th><th>理쒓렐 異쒗븯泥?/th></tr>" +
+    rp.map(r=>`<tr><td>${esc(r.serial_no)}</td><td>${esc(r.model)}</td><td>${esc(orgLabel(r.org))}</td>
+      <td class="num">${r.n}</td><td>${esc(r.last_site)}</td></tr>`).join("");
+}
+
+// ========== 二쇰퀎 ?ㅼ쟻 ==========
+function metricSeries(key){
+  const tr = SNAPSHOT[key].value || SNAPSHOT[key];
+  const mo=[...new Set(tr.map(r=>r.month))].sort((a,b)=>a-b);
+  const tm=["D","M","K"];
+  return {mo, tm, val:(mm,x)=>tr.find(r=>r.month===mm&&r.team_code===x)?.value||0, raw:tr};
+}
+function lineChart(id, s, fmt){
+  chart(id,{grid:{left:58,right:16,top:30,bottom:26},
+    tooltip:{trigger:"axis",valueFormatter:fmt},
+    legend:{...LEG,type:"scroll",top:0,itemWidth:14,itemHeight:8,textStyle:{color:TXT,fontSize:11}},
+    xAxis:{type:"category",data:s.mo.map(x=>x+"??),...AX,axisLabel:{color:TXT,fontSize:11}},
+    yAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,
+      formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"??:v>=1e6?(v/1e6).toFixed(0)+"諛깅쭔":num(v)}},
+    series:s.tm.map(x=>({name:teamLabel(x),type:"line",smooth:true,symbolSize:5,
+      itemStyle:{color:PAL[orgRank(x)%PAL.length]},
+      data:s.mo.map(mm=>s.val(mm,x))}))});
+}
+function loadWeeklyInit(){
+  const rev = metricSeries("trend_revenue");
+  if(!rev.mo.length){
+    el("trend-note").textContent = "二쇨컙蹂닿퀬(二쇨컙 ?ㅼ쟻) ?곗씠?곌? ???ㅻ깄?룹뿉???놁뒿?덈떎.";
+    el("wk-cards").innerHTML=""; el("t-weekly").innerHTML=""; return;
+  }
+  el("trend-note").textContent="";
+  const svc = metricSeries("trend_service");
+  const inb = metricSeries("trend_inbound");
+  const lastM = Math.max(...rev.mo);
+  const sum = x => rev.mo.reduce((a,mm)=>a+rev.val(mm,x),0);
+  const ytd = ["D","M","K"].reduce((a,x)=>a+sum(x),0);
+  const lastTot = ["D","M","K"].reduce((a,x)=>a+rev.val(lastM,x),0);
+  el("wk-cards").innerHTML = [
+    [`${lastM}??AS留ㅼ텧`, won(lastTot), "D=二쇨컙蹂닿퀬 쨌 M쨌K=?듯빀?쒗듃"],
+    ["???꾧퀎 AS留ㅼ텧", won(ytd), `1~${lastM}??],
+    [`${lastM}???쒕퉬??, num(["D","M","K"].reduce((a,x)=>a+svc.val(lastM,x),0))+"嫄?, ""],
+    [`${lastM}??Inbound`, num(["D","M","K"].reduce((a,x)=>a+inb.val(lastM,x),0))+"嫄?, ""],
+  ].map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="s">${c[2]}</div></div>`).join("");
+
+  lineChart("c-trend", rev, v=>won(v));
+  const cumVal = (mm,x)=>rev.mo.filter(k=>k<=mm).reduce((a,k)=>a+rev.val(k,x),0);
+  lineChart("c-trend-cum", {mo:rev.mo, tm:rev.tm, val:cumVal}, v=>won(v));
+  lineChart("c-svc", svc, v=>num(v)+"嫄?);
+  lineChart("c-inb", inb, v=>num(v)+"嫄?);
+
+  const cell = (v,c)=>`<td class="num">${won(v)}<br><span class="muted" style="font-size:11px">?꾧퀎 ${won(c)}</span></td>`;
+  el("t-weekly").innerHTML =
+    "<tr><th>??/th><th class='num'>D Tech<br><span class='muted' style='font-weight:400;font-size:11px'>?뱀썡 / ?꾧퀎</span></th>"
+    + "<th class='num'>M Tech<br><span class='muted' style='font-weight:400;font-size:11px'>?뱀썡 / ?꾧퀎</span></th>"
+    + "<th class='num'>K Tech<br><span class='muted' style='font-weight:400;font-size:11px'>?뱀썡 / ?꾧퀎</span></th>"
+    + "<th class='num'>?⑷퀎<br><span class='muted' style='font-weight:400;font-size:11px'>?뱀썡 / ?꾧퀎</span></th></tr>" +
+    rev.mo.map(mm=>{const d=rev.val(mm,"D"),m=rev.val(mm,"M"),k=rev.val(mm,"K");
+      const cd=cumVal(mm,"D"),cm=cumVal(mm,"M"),ck=cumVal(mm,"K");
+      return `<tr><td>${mm}??/td>${cell(d,cd)}${cell(m,cm)}${cell(k,ck)}${cell(d+m+k,cd+cm+ck)}</tr>`;}).join("")
+    + `<tr><td><b>???꾧퀎</b></td><td class="num"><b>${won(sum("D"))}</b></td><td class="num"><b>${won(sum("M"))}</b></td>
+        <td class="num"><b>${won(sum("K"))}</b></td><td class="num"><b>${won(ytd)}</b></td></tr>`;
+}
+
+// ========== 吏??==========
+let worldReady=false, krReady=false, mapDataLoaded=false;
+const KR_MAP = {
+  "?쒖슱":"?쒖슱?밸퀎??,"寃쎄린":"寃쎄린??,"?몄쿇":"?몄쿇愿묒뿭??,"媛뺤썝":"媛뺤썝??,
+  "異⑸턿":"異⑹껌遺곷룄","異⑸궓":"異⑹껌?⑤룄","???:"??꾧킅??떆","?몄쥌":"?몄쥌?밸퀎?먯튂??,
+  "?꾨턿":"?꾨씪遺곷룄","?꾨궓":"?꾨씪?⑤룄","愿묒＜":"愿묒＜愿묒뿭??,
+  "寃쎈턿":"寃쎌긽遺곷룄","寃쎈궓":"寃쎌긽?⑤룄","?援?:"?援ш킅??떆","?몄궛":"?몄궛愿묒뿭??,"遺??:"遺?곌킅??떆",
+  "?쒖＜":"?쒖＜?밸퀎?먯튂??
+};
+function loadMap(){
+  if(mapDataLoaded){ Object.values(charts).forEach(c=>c.resize()); return; }
+  mapDataLoaded = true;
+
+  const d = SNAPSHOT.as_countries;
+  el("wm-note").textContent = "嫄댁닔 = ?듯빀?쒗듃 湲곗? 쨌 梨꾧텒 泥댄겕湲?= 留ㅼ텧梨꾧텒 以?泥댄겕湲덉븸 (?먰솕?섏궛)";
+  el("t-country").innerHTML =
+    "<tr><th>援??</th><th>ISO3</th><th>沅뚯뿭</th><th class='num'>AS 嫄댁닔</th><th class='num'>梨꾧텒 泥댄겕湲?/th><th class='num'>誘명쉶?섏옍??/th></tr>" +
+    d.rows.map(r=>`<tr><td>${esc(r.country)}</td><td>${r.iso3||"-"}</td><td>${esc(r.region_group)}</td>
+      <td class="num">${num(r.n)}</td><td class="num">${r.revenue_krw?won(r.revenue_krw):"-"}</td>
+      <td class="num">${r.balance_krw?won(r.balance_krw):"-"}</td></tr>`).join("");
+  try{ echarts.registerMap("world", WORLD_GEO); worldReady=true; }
+  catch(e){ el("wm-note").textContent="?멸퀎 吏??濡쒕뱶 ?ㅽ뙣: "+e; }
+  const pts=d.rows.filter(r=>r.lat!=null).map(r=>({name:r.country,value:[+r.lng,+r.lat,r.n],krw:r.revenue_krw}));
+  const mx=Math.max(1,...pts.map(p=>p.value[2]));
+  chart("c-worldmap", worldReady ? {
+    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>AS ${num(p.value[2])}嫄?
+      + (p.data.krw?`<br/>梨꾧텒 泥댄겕湲?${won(p.data.krw)}`:"")},
+    geo:{map:"world",roam:true,silent:true,layoutCenter:["50%","54%"],layoutSize:"138%",
+      itemStyle:{areaColor:"#243044",borderColor:"#475569"}},
+    series:[{type:"effectScatter",coordinateSystem:"geo",data:pts,
+      symbolSize:v=>8+38*Math.sqrt(v[2]/mx),rippleEffect:{scale:2.2},
+      itemStyle:{color:"#22d3ee",shadowBlur:8,shadowColor:"#22d3ee"}}]
+  } : {grid:{left:90,right:20,top:10,bottom:24},xAxis:{type:"value",...AX},
+      yAxis:{type:"category",inverse:true,...AX,data:d.rows.slice(0,20).map(r=>r.country)},
+      tooltip:{trigger:"axis"},series:[{type:"bar",data:d.rows.slice(0,20).map(r=>r.n),itemStyle:{color:"#22d3ee"}}]});
+
+  const kr = SNAPSHOT.as_krregions;
+  const agg={};
+  kr.rows.forEach(r=>{ const nm=KR_MAP[r.region]||null; if(!nm) return;
+    agg[nm]=agg[nm]||{n:0,krw:0}; agg[nm].n+=r.n; agg[nm].krw+=Number(r.krw||0); });
+  el("t-krregion").innerHTML =
+    "<tr><th>吏??/th><th>?</th><th class='num'>嫄댁닔</th><th class='num'>?섎━留ㅼ텧</th></tr>" +
+    [...kr.rows].sort((a,b)=>orgRank(a.org)-orgRank(b.org)||b.n-a.n)
+      .map(r=>`<tr><td>${esc(r.region)}</td><td>${esc(orgLabel(r.org))}</td>
+      <td class="num">${num(r.n)}</td><td class="num">${won(r.krw)}</td></tr>`).join("");
+  el("kr-note").textContent = kr.filled < kr.domestic_total
+    ? `援?궡 ${num(kr.domestic_total)}嫄?以?${num(kr.filled)}嫄?吏??留ㅽ븨??(?섎㉧吏??誘명솗??吏??諛섏쁺)` : "";
+  try{ echarts.registerMap("korea", KOREA_GEO); krReady=true; }
+  catch(e){ el("kr-note").textContent += "  ?쒓뎅 吏??濡쒕뱶 ?ㅽ뙣: "+e; }
+  const kdata=Object.entries(agg).map(([name,v])=>({name,value:v.n,krw:v.krw}));
+  const kmx=Math.max(1,...kdata.map(d=>d.value));
+  chart("c-krmap", krReady ? {
+    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>AS ${num(p.value||0)}嫄?+ (p.data?`<br/>?섎━鍮?${won(p.data.krw)}`:"")},
+    visualMap:{min:0,max:kmx,right:12,bottom:12,calculable:true,
+      inRange:{color:["#334769","#6366f1","#c7d2fe"]},...LEG},
+    series:[{type:"map",map:"korea",roam:true,data:kdata,layoutCenter:["50%","52%"],layoutSize:"118%",
+      label:{show:true,color:"#f8fafc",fontSize:10,fontWeight:700,textBorderColor:"#0f172a",textBorderWidth:2.5},
+      itemStyle:{borderColor:"#475569"},emphasis:{label:{color:"#fff"},itemStyle:{areaColor:"#22d3ee"}}}]
+  } : {grid:{left:80,right:20,top:10,bottom:24},xAxis:{type:"value",...AX},
+      yAxis:{type:"category",inverse:true,...AX,data:kdata.map(d=>d.name)},tooltip:{trigger:"axis"},
+      series:[{type:"bar",data:kdata.map(d=>d.value),itemStyle:{color:"#6366f1"}}]});
+}
+
+// ========== ?곗폆 議고쉶 (?대씪?댁뼵???꾪꽣) ==========
+let tkState={org:"",line:"",month:"",warr:"",q:""}, tkTimer;
+function initTickets(){
+  const f = SNAPSHOT.as_filters;
+  const orgsOrdered = [...f.orgs].sort((a,b)=>orgRank(a)-orgRank(b));
+  el("tk-org").innerHTML = [
+    `<span class="chip on" data-v="">?꾩껜</span>`,
+    ...orgsOrdered.map(o=>`<span class="chip" data-v="${o}">${orgLabel(o)}</span>`)].join("");
+  el("tk-org").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
+    el("tk-org").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===c));
+    tkState.org=c.dataset.v; loadTickets();
+  });
+  el("tk-line").innerHTML = '<option value="">?꾩껜 ?λ퉬援?/option>' +
+    f.product_lines.map(l=>`<option>${l}</option>`).join("");
+  el("tk-month").innerHTML = '<option value="">?꾩껜 ??議곗튂??</option>' +
+    f.months.map(m=>`<option value="${m}">${m}??議곗튂)</option>`).join("");
+  ["tk-line","tk-month","tk-warr"].forEach(id=> el(id).onchange = e=>{
+    tkState[id==="tk-line"?"line":id==="tk-month"?"month":"warr"]=e.target.value; loadTickets(); });
+  el("tk-q").oninput = e=>{ clearTimeout(tkTimer); tkState.q=e.target.value.trim();
+    tkTimer=setTimeout(loadTickets,250); };
+  loadTickets();
+}
+function filterTickets(){
+  let rows = SNAPSHOT.as_tickets.rows;
+  if(tkState.org) rows = rows.filter(r=>r.org===tkState.org);
+  if(tkState.line) rows = rows.filter(r=>r.product_line===tkState.line);
+  if(tkState.month) rows = rows.filter(r=> r.action_date && (new Date(r.action_date).getMonth()+1)===Number(tkState.month));
+  if(tkState.warr) rows = rows.filter(r=>r.warranty===tkState.warr);
+  if(tkState.q){
+    const q = tkState.q.toLowerCase();
+    rows = rows.filter(r => [r.symptom,r.action,r.cause,r.shipped_to,r.product_model,r.serial_no,r.region_kr,r.country]
+      .some(v => v && String(v).toLowerCase().includes(q)));
+  }
+  return rows;
+}
+function loadTickets(){
+  const filtered = filterTickets();
+  const shown = filtered.slice(0, 2000);
+  el("tk-count").textContent = `${num(shown.length)} / 珥?${num(filtered.length)}嫄? + (filtered.length>2000?" (?곸쐞 2000)":"");
+  el("t-tickets").innerHTML =
+    "<tr><th>議곗튂??/th><th>?묒닔??/th><th>?</th><th>?λ퉬援?/th><th>異쒗븯泥?/th><th>吏??/th><th>紐⑤뜽</th><th>蹂댁쬆</th>"+
+    "<th>利앹긽</th><th>?먯씤</th><th>議곗튂</th><th class='num'>?섎━鍮?/th></tr>" +
+    shown.map(r=>`<tr>
+      <td>${(r.action_date||"").slice(0,10)}</td><td class="muted">${(r.received_date||"").slice(0,10)}</td><td>${esc(orgLabel(r.org))}</td><td>${esc(r.product_line)}</td>
+      <td title="${esc(r.shipped_to)}">${esc((r.shipped_to||"").slice(0,18))}</td>
+      <td>${esc(r.region_kr||r.country)}</td><td>${esc(r.product_model)}</td><td>${esc(r.warranty)}</td>
+      <td title="${esc(r.symptom)}">${esc((r.symptom||"").slice(0,40))}</td>
+      <td title="${esc(r.cause)}">${esc((r.cause||"").slice(0,28))}</td><td>${esc(r.fix_class)}</td>
+      <td class="num">${r.repair_amount?(r.repair_currency==="KRW"?won(r.repair_amount):r.repair_currency+" "+num(r.repair_amount)):""}</td>
+    </tr>`).join("");
+}
+
+// ========== 梨꾧텒 ==========
+const teamName = t => ({D:"D Tech",M:"M Tech",K:"K Tech"}[t]||t||"湲고?");
+function loadRecv(){
+  const d = SNAPSHOT.recv_overview;
+  const c = d.cards||{};
+  const rate = c.bal_krw ? (c.overdue_krw*100/c.bal_krw) : 0;
+  el("recv-cards").innerHTML=[
+    ["梨꾧텒 ?붿븸(?먰솕?섏궛)", won(c.bal_krw), `泥?뎄 ${won(c.billed_krw)} 以?誘명쉶??],
+    ["?곗껜쨌誘명쉶??湲덉븸", won(c.overdue_krw), rate.toFixed(0)+"% 쨌 誘명쉶?섍굔 "+num(c.open_n)],
+    ["?κ린誘몄닔 湲덉븸", c.long_krw?won(c.long_krw):"-", c.long_krw?"援?궡 <?κ린誘몄닔> 援щ텇":"援?궡 梨꾧텒 誘몃벑濡?],
+    ["嫄곕옒泥???, num(c.entities), "?붿븸 蹂댁쑀 湲곗?"],
+  ].map(x=>`<div class="card"><div class="k">${x[0]}</div><div class="v">${x[1]}</div><div class="s">${x[2]}</div></div>`).join("");
+
+  const bt=d.by_team||[];
+  chart("c-recv-team",{grid:{left:70,right:60,top:10,bottom:24},tooltip:{trigger:"axis",axisPointer:{type:"shadow"},
+      valueFormatter:won},
+    legend:{...LEG,top:0,itemWidth:12,itemHeight:8,textStyle:{color:TXT,fontSize:11},data:["?뺤긽","?곗껜쨌誘명쉶??,"?κ린誘몄닔"]},
+    xAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"??:Math.round(v/1e6)+"諛깅쭔"}},
+    yAxis:{type:"category",...AX,inverse:true,data:bt.map(x=>teamName(x.team))},
+    series:[
+      {name:"?뺤긽",type:"bar",stack:"x",data:bt.map(x=>Math.max((x.bal_krw||0)-(x.overdue_krw||0),0)),itemStyle:{color:"#38dcf0"}},
+      {name:"?곗껜쨌誘명쉶??,type:"bar",stack:"x",data:bt.map(x=>Math.max((x.overdue_krw||0)-(x.long_krw||0),0)),itemStyle:{color:"#f87171"}},
+      {name:"?κ린誘몄닔",type:"bar",stack:"x",data:bt.map(x=>x.long_krw||0),itemStyle:{color:"#7f1d1d"}},
+      {name:"",type:"bar",stack:"x",data:bt.map(()=>0),tooltip:{show:false},
+        label:{show:true,position:"right",color:TXT,fontSize:10,formatter:p=>won(bt[p.dataIndex].bal_krw)}}]});
+
+  chart("c-recv-cur", donut((d.by_currency||[]).filter(x=>x.bal_krw>0).map(x=>({k:x.k,n:x.bal_krw}))));
+  chart("c-recv-status", donut((d.by_status||[]).filter(x=>x.bal_krw>0).map(x=>({k:x.k,n:x.bal_krw}))));
+
+  const ag=d.aging||[];
+  chart("c-recv-aging",{grid:{left:56,right:20,top:16,bottom:24},tooltip:{trigger:"axis",valueFormatter:won},
+    xAxis:{type:"category",data:ag.map(x=>x.bucket+"??),...AX,axisLabel:{color:TXT,fontSize:11}},
+    yAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"??:Math.round(v/1e6)+"諛깅쭔"}},
+    series:[{type:"bar",barMaxWidth:34,data:ag.map(x=>x.bal_krw),
+      itemStyle:{color:p=>["0-30","31-60"].includes(ag[p.dataIndex].bucket)?"#38dcf0":ag[p.dataIndex].bucket==="61-90"?"#fbbf24":"#f87171",borderRadius:[3,3,0,0]},
+      label:{show:true,position:"top",color:TXT,fontSize:10,formatter:p=>ag[p.dataIndex].n+"嫄?}}]});
+
+  const stBadge = r => r.long_overdue
+      ? '<span style="background:#7f1d1d;color:#fecaca;padding:1px 7px;border-radius:9px;font-size:11px">?κ린誘몄닔</span>'
+      : r.overdue
+      ? '<span style="background:#7f2d2d;color:#fca5a5;padding:1px 7px;border-radius:9px;font-size:11px">?곗껜</span>'
+      : '<span class="muted">?뺤긽</span>';
+  el("t-recv").innerHTML =
+    "<tr><th>嫄곕옒泥?/th><th>?</th><th>梨꾨꼸</th><th>援??</th><th class='num'>嫄?/th><th class='num'>湲덉븸(??</th><th>?곹깭</th></tr>" +
+    (d.top||[]).map(r=>`<tr${r.long_overdue?' style="background:rgba(127,29,29,.22)"':''}>
+      <td>${esc(r.entity)}</td><td>${esc(teamName(r.team))}</td><td>${esc(r.channel||"")}</td>
+      <td>${esc(r.country||"")}</td><td class="num">${num(r.n)}</td>
+      <td class="num">${won(r.bal_krw)}</td>
+      <td>${stBadge(r)}</td>
+    </tr>`).join("");
+}
+
+// ========== boot ==========
+el("meta").textContent = "?ㅻ깄??罹≪쿂: " + GENERATED_AT + " 쨌 ?ㅼ떆媛??쒕쾭 ?곌껐 ?놁쓬 (?쎄린 ?꾩슜)";
+loadAS(); loadWeeklyInit(); initTickets();
+</script>
+</body>
+</html>

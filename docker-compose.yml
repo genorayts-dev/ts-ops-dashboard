@@ -31,6 +31,7 @@ services:
       TSD_GOOGLE_SA_JSON: ${TSD_GOOGLE_SA_JSON:-}
     volumes:
       - ./deploy:/deploy:ro
+      - ./frontend/dist/vendor:/vendor:ro
     depends_on:
       db:
         condition: service_healthy
