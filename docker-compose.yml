@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tsd
+      POSTGRES_PASSWORD: tsd
+      POSTGRES_DB: tsd
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+      - ./data:/seed:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tsd"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    restart: unless-stopped
+    build: ./backend
+    environment:
+      TSD_DATABASE_URL: postgresql+psycopg://tsd:tsd@db:5432/tsd
+      TSD_CORS_ORIGINS: '["http://localhost:8080","http://localhost:5173"]'
+      # 국내 상세지도 타일 — 옆의 .env 파일에서 주입 (키를 이 파일에 직접 쓰지 말 것).
+      TSD_KR_MAP_TILE_URL: ${TSD_KR_MAP_TILE_URL:-}
+      TSD_KR_MAP_ATTRIBUTION: ${TSD_KR_MAP_ATTRIBUTION:-}
+      # 구글 시트 연동: 서비스 계정 JSON 을 deploy/google-sa.json 에 두면 활성화.
+      TSD_GOOGLE_SA_JSON: ${TSD_GOOGLE_SA_JSON:-}
+    volumes:
+      - ./deploy:/deploy:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    # 코드 변경 시: docker compose up -d --build backend  로 이미지 재빌드.
+    # (Docker Desktop for Windows 에서 마운트 볼륨 + --reload 는 인제스트를 크게 느리게 만듦)
+
+  # 프런트(정적 빌드) + API 프록시 + 사내 SSO 헤더 주입 지점
+  web:
+    restart: unless-stopped
+    image: nginx:1.27
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html:ro
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./deploy/htpasswd:/etc/nginx/htpasswd:ro
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  pgdata:

@@ -1,0 +1,108 @@
+# =============================================================================
+# 파싱 규칙 — 양식이 바뀌거나 AS리포트가 새로 오면 코드가 아니라 이 파일을 수정.
+# 좌표 표기: "시트명!앵커텍스트" 로 앵커 셀을 찾고, 거기서 상대 오프셋으로 값을 읽는다.
+# =============================================================================
+
+formats:
+  weekly_new:
+    # TS본부_주간업무(2026년 N월 N주).xlsx  — 4 시트
+    detect:
+      required_sheets: ["0. 주간보고(TS본부)"]           # 정확 일치 or 접두
+      any_sheet_prefix: ["1. D테크", "2. M테크", "3. K테크"]
+    period:
+      from: "filename"                                   # "(2026년 9월 1주)" 정규식
+      filename_regex: '\((?P<year>\d{4})년\s*(?P<month>\d{1,2})월\s*(?P<week>\d{1,2})주\)'
+    summary_sheet: "0. 주간보고(TS본부)"
+    summary_table:
+      anchor: "구분"                                     # 헤더행: 구분 | AS접수/완료 | Inbound | AS 매출 | AS 매출(26년 누계)
+      rows:
+        D: {label: "D테크"}
+        M: {label: "M테크"}
+        K: {label: "K테크"}
+      cols: {received: 1, inbound: 3, revenue_krw: 5, revenue_krw_ytd: 7}
+    team_sheets:
+      D: {sheet: "1. D테크", kind: "dental"}
+      M: {sheet: "2. M테크", kind: "medical"}
+      K: {sheet: "3. K테크", kind: "ktech"}
+    team_blocks:
+      region_table:   {anchor: "상세 지역별", header_offset: 2, stop_on: "합계"}
+      swhw_table:     {anchor: "S/W & H/W 분류"}       # 또는 "1-2. S/W"
+      collection:     {anchor: "수금현황",  stop_on: "합계"}
+      receivable:     {anchor: "채권현황",  stop_on: "2-3."}
+    # K테크 시트는 구조가 달라 별도 규칙
+    ktech_sheet:
+      visit_as:  {anchor: "금주 AS현황"}
+      revenue:   {anchor: "2. AS매출"}
+      by_carm:   {anchor: "3-1 C-arm"}
+      by_mammo:  {anchor: "3-2 Mammo"}
+      by_dental: {anchor: "3-3 Dental"}
+      inbound:   {anchor: "4. INBOUND 건수"}
+      shipment:  {anchor: "5. 장비별 출하 건수"}
+      hr:        {anchor: "6. 인사"}
+
+  weekly_old:
+    # *주간회의록*.xlsx — 다중 시트(K/M/D테크솔루션 + 서비스 이력 + 환율 + 백업)
+    detect:
+      any_sheet_in: ["TS본부 주간업무보고", "주간회의록(양식)", "K테크솔루션"]
+    period:
+      from: "sheet_title"                                # 'TS본부 주간업무보고' A2: "■ TS본부 1월 2주차 주간보고"
+      title_regex: '(?P<month>\d{1,2})월\s*(?P<week>\d{1,2})주차'
+    summary_sheet: "TS본부 주간업무보고"
+    summary_table:
+      anchor: "구분"
+      rows: {K: {label: "K테크솔루션팀"}, M: {label: "M테크솔루션팀"}, D: {label: "D테크솔루션팀"}}
+      cols: {received: 1, inbound: 3, revenue_krw: 5, revenue_krw_ytd: 7}
+    team_sheets:
+      K: {sheet: "K테크솔루션", history: "K테크솔루션 서비스 이력"}
+      M: {sheet: "M테크솔루션", history: "M테크솔루션 서비스 이력"}
+      D: {sheet: "D테크솔루션", history: "D테크솔루션 서비스 이력"}
+    support_as_sheet: "M·D테크솔루션 지원 AS현황"          # svc_case 로 적재
+    fx_sheet: "환율"
+
+  monthly:
+    # TS본부_월간실적(2026년 NN월)*.xlsx / [TS본부] 월간 실적 ...
+    detect:
+      any_sheet_in: ["월간 실적"]
+      any_sheet_prefix: ["(D테크) 서비스 실적", "(M테크) 서비스 실적", "(K테크) 서비스 실적"]
+    period:
+      from: "filename"
+      filename_regex: '(?P<year>\d{4})년?\s*(?P<month>\d{1,2})월'
+    cover_sheet: "월간 실적"
+    cover:
+      trend_matrix_anchor: "당월"                        # 1월~당월 x (D테크/M테크/K테크/Total) 3블록: 서비스/인바운드/AS매출
+      issue_anchor: "Ⅱ. 서비스 이슈"
+      kpi_anchor: "Ⅲ. KPI 추진 실적"
+    team_service_sheets:
+      D: "(D테크) 서비스 실적"
+      M: "(M테크) 서비스 실적"
+      K: "(K테크) 서비스 실적"
+    team_service_blocks:
+      by_model:  {anchor: "1. 제품별", stop_on: "합계"}
+      by_region: {anchor: "2. 지역별", stop_on: "합계"}
+      by_defect: {anchor: "3. 불량 내역별", stop_on: "총계"}
+    raw_data_sheets: ["M테크 Raw Data", "K테크솔루션 지원 Raw Data"]
+    raw_data_columns:                                    # 헤더행 자동 매칭 키
+      seq_no: ["No"]
+      region: ["지역"]
+      country: ["국가"]
+      install_date: ["지원시작일", "설치일"]
+      product_model: ["제품 사양", "제품사양", "모델"]
+      product_code: ["제품 코드", "제품코드", "제조번호"]
+      received_date: ["접수일"]
+      action_date: ["조치일"]
+      title: ["제목", "증상"]
+      action: ["조치사항"]
+      defect_cause: ["불량 원인", "불량원인", "원인"]
+      result: ["결과", "상태"]
+
+# 동의어 통합 — 지도 조인 키
+country_aliases:
+  "터키": "튀르키예"
+  "튀르키예": "튀르키예"
+  "UAE(이란)": "아랍에미리트"
+  "미국": "미국"
+region_groups: ["아시아", "CIS", "중동", "아프리카", "유럽", "남미", "오세아니아", "중국", "북미"]
+defect_categories:
+  SW: ["영상품질", "Calibration", "Theia", "OP", "Software", "Firmware", "Windows", "PC"]
+  HW: ["Generator", "Detector", "PCB", "반제품", "기구부", "Motor류"]
+  지원: ["사용자 교육", "기타"]
