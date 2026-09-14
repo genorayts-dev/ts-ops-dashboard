@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
@@ -62,7 +62,7 @@
 </header>
 <nav>
   <button data-tab="as" class="on">AS 분석</button>
-  <button data-tab="weekly">주별 실적</button>
+  <button data-tab="weekly">월별 실적</button>
   <button data-tab="map">지도</button>
   <button data-tab="tickets">AS 이력</button>
   <button data-tab="recv">채권</button>
@@ -271,7 +271,7 @@ function loadAS(){
       <td class="num">${r.n}</td><td>${esc(r.last_site)}</td></tr>`).join("");
 }
 
-// ========== 주별 실적 ==========
+// ========== 월별 실적 ==========
 function metricSeries(key){
   const tr = SNAPSHOT[key].value || SNAPSHOT[key];
   const mo=[...new Set(tr.map(r=>r.month))].sort((a,b)=>a-b);
