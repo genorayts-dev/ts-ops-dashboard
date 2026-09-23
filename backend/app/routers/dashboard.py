@@ -133,6 +133,12 @@ def trend(db: Session = Depends(get_db), metric: str = "revenue_krw",
     # AS매출: D테크만 월간보고, M/K테크는 데이터 통합시트(as_ticket 조치일 기준 수리비 합)로 대체.
     #   추가로 K테크는 유지보수(월납) 계약액을 월별로 가산한다(월간보고엔 있으나 통합시트엔 없음).
     #   (사용자 지시 2026-09-10. 건수/Inbound 는 그대로 월간보고 유지.)
+    # 2026-09-22: D의 주간·통합시트 폴백(2026-09-17 도입) 중 주간(svc_summary) 단계는 제거.
+    #   이유: "수리비 합계(건별)" 카드와 이 지표가 서로 다른 소스라 숫자가 안 맞아 보이는 문제 —
+    #   억지로 맞추는 대신 소스를 단순하게 정리(장기적으로 통합시트 단일 소스화 예정).
+    #   다만 월간보고가 아직 없는 최신월(예: 진행 중인 이번 달)까지 0으로 비어 보이는 건
+    #   과했다는 피드백 → 통합시트에서 잡히는 만큼(해외발송분, D 서비스탭엔 금액 자체가 없어
+    #   overseas_ship 만 해당)은 그대로 폴백 유지. 주간만 제외.
     if metric == "revenue_krw":
         sheet = db.execute(text("""
             SELECT EXTRACT(MONTH FROM t.action_date)::int AS month,
@@ -165,15 +171,101 @@ def trend(db: Session = Depends(get_db), metric: str = "revenue_krw",
         """), {"y": year}).mappings().all()
         maint_by_month = {r["month"]: int(r["fee"] or 0) for r in maint}
 
+        # D테크: 월간보고(monthly_trend) 값이 있으면 그대로 쓰고, 없는 달(예: 최신 진행월)만
+        # 통합시트(overseas_ship, D 서비스탭엔 금액이 아예 없어 해외발송분만 잡힘)로 채운다.
+        d_sheet = db.execute(text("""
+            SELECT EXTRACT(MONTH FROM t.action_date)::int AS month,
+                   sum(coalesce(t.repair_amount_krw, 0))::bigint AS value
+              FROM as_ticket t
+              JOIN v_latest_batch lb ON lb.batch_id = t.batch_id
+             WHERE t.org = 'D' AND t.src = 'overseas_ship'
+               AND t.action_date >= make_date(:y, 1, 1)
+               AND t.action_date <  make_date(:y + 1, 1, 1)
+             GROUP BY 1
+        """), {"y": year}).mappings().all()
+        d_sheet_by_month = {r["month"]: int(r["value"]) for r in d_sheet}
+
         want = {"M", "K"} if team == "all" else ({team} & {"M", "K"})
+        want_d = team in ("all", "D")
         merged = [dict(r) for r in rows if r["team_code"] not in ("M", "K")]
-        months = {r["month"] for r in rows} | {m for (m, _) in sheet_mk}
+        d_present_months = {r["month"] for r in rows if r["team_code"] == "D"}
+        months = {r["month"] for r in rows} | {m for (m, _) in sheet_mk} | set(d_sheet_by_month)
         for mth in months:
             for tc in want:
                 v = int(sheet_mk.get((mth, tc), 0))
                 if tc == "K":
                     v += maint_by_month.get(mth, 0)
                 merged.append({"month": mth, "team_code": tc, "value": v})
+            if want_d and mth not in d_present_months:
+                v = d_sheet_by_month.get(mth, 0)
+                if v:
+                    merged.append({"month": mth, "team_code": "D", "value": v})
+        merged.sort(key=lambda r: (r["month"] or 0, r["team_code"]))
+        return merged
+
+    # service_cnt: 월간보고에 없는 (팀,월) 조합은 주간보고(그 달 주차 합) → 그마저 없으면
+    #   통합시트(as_ticket 접수일, _SVC 정의와 동일하게 해외발송 제외) 순으로 채운다.
+    #   (주간이 더 완전한 경우가 많음 — 예: D 는 MD AS 탭에 그 달 건이 아직 안 올라와도
+    #   주간보고엔 잡혀있을 수 있음. 목표: 어느 소스든 최선의 값으로 빈 달을 안 남기기.
+    #   2026-09-17 사용자 지시.)
+    if metric == "service_cnt":
+        weekly_cnt = db.execute(text("""
+            SELECT p.month AS month, s.team_code, sum(coalesce(s.received, 0))::bigint AS value
+              FROM svc_summary s
+              JOIN v_latest_batch lb ON lb.batch_id = s.batch_id
+              JOIN report_period p ON p.id = s.period_id
+             WHERE p.ptype = 'weekly' AND p.year = :y
+             GROUP BY p.month, s.team_code
+        """), {"y": year}).mappings().all()
+        weekly_cnt_map = {(r["month"], r["team_code"]): int(r["value"]) for r in weekly_cnt}
+
+        sheet_cnt = db.execute(text("""
+            SELECT EXTRACT(MONTH FROM t.received_date)::int AS month,
+                   (CASE WHEN t.org = '부산' THEN 'K' ELSE t.org END) AS team_code,
+                   count(*) FILTER (WHERE t.src IS DISTINCT FROM 'overseas_ship')::bigint AS value
+              FROM as_ticket t
+              JOIN v_latest_batch lb ON lb.batch_id = t.batch_id
+             WHERE t.received_date >= make_date(:y, 1, 1)
+               AND t.received_date <  make_date(:y + 1, 1, 1)
+             GROUP BY 1, 2
+        """), {"y": year}).mappings().all()
+        sheet_cnt_map = {(r["month"], r["team_code"]): int(r["value"]) for r in sheet_cnt}
+
+        present = {(r["month"], r["team_code"]) for r in rows}
+        teams_all = {"D", "M", "K"} if team == "all" else ({team} & {"D", "M", "K"})
+        merged = [dict(r) for r in rows]
+        months = {r["month"] for r in rows} | {m for (m, _) in weekly_cnt_map} | {m for (m, _) in sheet_cnt_map}
+        for mth in months:
+            for tc in teams_all:
+                if (mth, tc) not in present:
+                    v = weekly_cnt_map.get((mth, tc)) or sheet_cnt_map.get((mth, tc)) or 0
+                    if v:
+                        merged.append({"month": mth, "team_code": tc, "value": v})
+        merged.sort(key=lambda r: (r["month"] or 0, r["team_code"]))
+        return merged
+
+    # inbound_cnt: 통합시트엔 Inbound(문의 접수) 개념 자체가 없어 채울 방법이 없다.
+    #   월간보고 없는 달은 주간보고(svc_summary)로만 보완.
+    if metric == "inbound_cnt":
+        weekly_inb = db.execute(text("""
+            SELECT p.month AS month, s.team_code, sum(coalesce(s.inbound, 0))::bigint AS value
+              FROM svc_summary s
+              JOIN v_latest_batch lb ON lb.batch_id = s.batch_id
+              JOIN report_period p ON p.id = s.period_id
+             WHERE p.ptype = 'weekly' AND p.year = :y
+             GROUP BY p.month, s.team_code
+        """), {"y": year}).mappings().all()
+        weekly_map = {(r["month"], r["team_code"]): int(r["value"]) for r in weekly_inb}
+        present = {(r["month"], r["team_code"]) for r in rows}
+        teams_all = {"D", "M", "K"} if team == "all" else ({team} & {"D", "M", "K"})
+        merged = [dict(r) for r in rows]
+        months = {r["month"] for r in rows} | {m for (m, _) in weekly_map}
+        for mth in months:
+            for tc in teams_all:
+                if (mth, tc) not in present:
+                    v = weekly_map.get((mth, tc), 0)
+                    if v:
+                        merged.append({"month": mth, "team_code": tc, "value": v})
         merged.sort(key=lambda r: (r["month"] or 0, r["team_code"]))
         return merged
 

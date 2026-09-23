@@ -4,7 +4,10 @@ __pycache__/
 *.pyc
 .venv/
 node_modules/
-frontend/dist/
 
 deploy/PASSWORD.txt
 deploy/htpasswd
+
+# DB 덤프/스냅샷 내보내기 — 실제 회사 데이터가 들어있어 절대 커밋 금지 (db/schema.sql 제외)
+/data_export*.sql
+/snapshot-data*.json

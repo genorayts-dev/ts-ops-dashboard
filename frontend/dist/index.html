@@ -5,64 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>TS본부 운영 대시보드</title>
 <script src="/vendor/echarts.min.js"></script>
-<style>
-  :root{
-    --bg:#0f172a; --panel:#1e293b; --panel2:#2b3a52; --line:#3b4a63;
-    --ink:#f1f5f9; --muted:#c3cddd; --dim:#9aa7bd; --accent:#7c85f5; --accent2:#38dcf0;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:"Segoe UI","Malgun Gothic",system-ui,sans-serif;font-size:14px}
-  header{padding:14px 24px;border-bottom:1px solid var(--line);
-    display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  header h1{font-size:17px;margin:0;font-weight:700}
-  header .meta{color:var(--dim);font-size:12px;margin-left:auto}
-  nav{display:flex;gap:4px;padding:12px 24px 0;flex-wrap:wrap}
-  nav button{background:none;border:0;color:var(--muted);padding:8px 14px;
-    border-radius:8px 8px 0 0;cursor:pointer;font-size:14px}
-  nav button:hover{color:var(--ink)}
-  nav button.on{background:var(--panel);color:var(--ink);font-weight:700}
-  main{padding:16px 24px 48px}
-  .grid{display:grid;gap:16px}
-  .cards{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
-  .card .k{color:var(--muted);font-size:12px;margin-bottom:6px}
-  .card .v{font-size:22px;font-weight:700;letter-spacing:-.5px}
-  .card .s{color:var(--dim);font-size:12px;margin-top:4px}
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:16px}
-  .panel h2{font-size:14px;margin:0 0 12px;font-weight:700;color:var(--ink)}
-  .chart{width:100%;height:340px}
-  .chart.tall{height:480px}
-  table{width:100%;border-collapse:collapse;font-size:12.5px}
-  th,td{text-align:left;padding:6px 9px;border-bottom:1px solid var(--line);white-space:nowrap;
-    overflow:hidden;text-overflow:ellipsis;max-width:280px}
-  td{color:var(--ink)}
-  th{color:var(--muted);font-weight:700;position:sticky;top:0;background:var(--panel);z-index:1}
-  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-  .scroll{max-height:520px;overflow:auto}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:820px){.row2{grid-template-columns:1fr}}
-  select,input[type=search]{background:var(--panel2);border:1px solid var(--line);color:var(--ink);
-    padding:6px 10px;border-radius:8px;font-size:13px}
-  input[type=search]{width:240px;max-width:100%}
-  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
-  .chip{background:var(--panel2);border:1px solid var(--line);color:var(--muted);
-    padding:4px 11px;border-radius:999px;cursor:pointer;font-size:12.5px}
-  .chip:hover{color:var(--ink)}
-  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-  .err{color:#fcd34d;font-size:12px;margin-top:8px}
-  .muted{color:var(--muted)}
-  .upbtn{display:inline-block;background:var(--accent);color:#fff;border-radius:8px;padding:9px 16px;
-    cursor:pointer;font-size:14px;font-weight:600}
-  .upbtn:hover{filter:brightness(1.12)}
-  #upmsg{font-size:12.5px;color:var(--ink);white-space:normal;margin-top:10px}
-  .drop{border:2px dashed var(--line);border-radius:12px;padding:28px;text-align:center;
-    color:var(--muted);margin:8px 0 16px;transition:.15s}
-  .drop.hot{border-color:var(--accent);color:var(--ink);background:rgba(124,133,245,.08)}
-</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@1.3.9/dist/web/static/pretendard.css" />
+<link rel="stylesheet" href="/styles.css?v=6" />
 </head>
 <body>
 <header>
+  <img src="/assets/genoray_logo.svg" alt="GENORAY" class="brand-logo" />
   <h1>TS본부 운영 대시보드</h1>
   <a class="upbtn" href="/api/export/snapshot" style="text-decoration:none;">HTML Download</a>
   <span class="meta" id="meta">불러오는 중…</span>
@@ -73,12 +21,13 @@
   <button data-tab="map">지도</button>
   <button data-tab="tickets">AS 내역</button>
   <button data-tab="recv">채권</button>
+  <button data-tab="status">현황</button>
   <button data-tab="data">데이터 관리</button>
 </nav>
 <main>
   <section id="tab-as">
     <div class="grid cards" id="as-cards"></div>
-    <div class="panel"><h2>월별 AS 건수·수리비(구글시트, 조치일 기준) · AS매출(D=월간보고, M·K=통합시트 조치일, K+유지보수)</h2><div id="c-monthly" class="chart"></div></div>
+    <div class="panel"><h2>월별 AS 건수·수리비(구글시트, 조치일 기준) · AS매출(D=월간→통합시트, M·K=통합시트 조치일, K+유지보수)</h2><div id="c-monthly" class="chart"></div></div>
     <div class="row2">
       <div class="panel"><h2>팀별 AS 건수 비중</h2><div id="c-byline" class="chart" style="height:240px"></div></div>
       <div class="panel"><h2>보증 (무상/유상)</h2><div id="c-warr" class="chart" style="height:240px"></div></div>
@@ -92,8 +41,9 @@
   </section>
 
   <section id="tab-weekly" hidden>
+    <div class="chips" style="margin-bottom:2px"><span class="muted" style="font-size:12px">월 선택</span><select id="wk-month"></select></div>
     <div class="grid cards" id="wk-cards"></div>
-    <div class="panel"><h2>팀별 월 AS매출 추이 (D=월간보고 · M·K=통합시트 조치일 · K는 유지보수 월납 포함)</h2>
+    <div class="panel"><h2>팀별 월 AS매출 추이 (D=월간→통합시트 · M·K=통합시트 조치일 · K는 유지보수 월납 포함)</h2>
       <div id="c-trend" class="chart"></div><div id="trend-note" class="err"></div></div>
     <div class="panel"><h2>팀별 누계 AS매출 (1월→당월 누적)</h2>
       <div id="c-trend-cum" class="chart" style="height:300px"></div></div>
@@ -144,6 +94,58 @@
       <div class="muted" style="font-size:11px;padding:4px">환율: 사업계획 고정(USD 1,380 / EUR 1,640 / JPY 9.4 / CNY 195) · 출처: 구글시트 「AS 채권 D/M/K」</div></div>
   </section>
 
+  <section id="tab-status" hidden>
+    <h2 style="margin:6px 2px 8px;font-size:15px">국내(K테크) 현황</h2>
+    <div class="grid cards" id="stk-cards"></div>
+    <div class="row2">
+      <div class="panel"><h2>W1. 주차별 AS 처리 건수 (제품분류별) <span class="muted" style="font-weight:400;font-size:11px">· 최근 12주(목~수) · 접수일</span></h2><div id="stk-w1" class="chart" style="height:260px"></div></div>
+      <div class="panel"><h2>W2. 주차별 AS 처리 건수 (S/W·H/W)</h2><div id="stk-w2" class="chart" style="height:260px"></div></div>
+    </div>
+    <div class="panel"><h2>W3. 주차별 AS 매출 <span class="muted" style="font-weight:400;font-size:11px">· 최근 12주(목~수) · 조치일</span></h2><div id="stk-w3" class="chart" style="height:240px"></div></div>
+    <div class="row2">
+      <div class="panel"><h2>M1. 월별 AS 처리 건수 (제품분류별) <span class="muted" style="font-weight:400;font-size:11px">· 접수일</span></h2><div id="stk-m1" class="chart" style="height:260px"></div></div>
+      <div class="panel"><h2>M2. 월별 AS 처리 건수 (유상·무상)</h2><div id="stk-m2" class="chart" style="height:260px"></div></div>
+    </div>
+    <div class="panel"><h2>M3. 월별 AS 매출 <span class="muted" style="font-weight:400;font-size:11px">· 조치일</span></h2><div id="stk-m3" class="chart" style="height:240px"></div></div>
+    <div class="row2">
+      <div class="panel"><h2>C2. 불량구분 (S/W·H/W) <span class="muted" style="font-weight:400;font-size:11px">· 2026 누계</span></h2><div id="stk-c2" class="chart" style="height:260px"></div></div>
+      <div class="panel"><h2>C3. 담당자별 처리 건수·매출 TOP 20</h2><div id="stk-c3" class="chart" style="height:260px"></div></div>
+    </div>
+    <div class="panel"><h2>C1. 제품분류 × 보증구분 <span class="muted" style="font-weight:400;font-size:11px">· 2026 누계 건수</span></h2>
+      <div class="scroll"><table id="stk-c1"></table></div>
+      <div id="stk-c1-note" class="muted" style="font-size:11px;line-height:1.5;padding:6px 4px 0"></div></div>
+
+    <h2 style="margin:24px 2px 8px;font-size:15px">해외(M·D테크) 현황</h2>
+    <div class="grid cards" id="sto-cards"></div>
+    <div class="row2">
+      <div class="panel"><h2>W1. 주차별 서비스 접수 건수 (팀별) <span class="muted" style="font-weight:400;font-size:11px">· 최근 12주(목~수) · 접수일</span></h2><div id="sto-w1" class="chart" style="height:260px"></div></div>
+      <div class="panel"><h2>W2. 주차별 서비스 건수 (팀×S/W·H/W)</h2><div id="sto-w2" class="chart" style="height:260px"></div></div>
+    </div>
+    <div class="panel"><h2>W3. 주차별 부품 발송 (건수·금액) <span class="muted" style="font-weight:400;font-size:11px">· 최근 12주(목~수) · 발송일 · 원화환산</span></h2><div id="sto-w3" class="chart" style="height:240px"></div></div>
+    <div class="row2">
+      <div class="panel"><h2>M1. 월별 서비스 접수 건수 (팀별) <span class="muted" style="font-weight:400;font-size:11px">· 접수일</span></h2><div id="sto-m1" class="chart" style="height:260px"></div></div>
+      <div class="panel"><h2>M2. 월별 서비스 건수 (제품분류별)</h2><div id="sto-m2" class="chart" style="height:260px"></div></div>
+    </div>
+    <div class="panel"><h2>M3. 월별 부품 발송 (건수·금액) <span class="muted" style="font-weight:400;font-size:11px">· 발송일 · 원화환산</span></h2><div id="sto-m3" class="chart" style="height:240px"></div></div>
+    <div class="row2">
+      <div class="panel"><h2>C2. 서비스 불량구분 (팀×S/W·H/W) <span class="muted" style="font-weight:400;font-size:11px">· 2026 누계</span></h2><div id="sto-c2" class="chart" style="height:260px"></div></div>
+      <div class="panel"><h2>C4. 담당자별 서비스 건수 TOP 20</h2><div id="sto-c4" class="chart" style="height:260px"></div></div>
+    </div>
+    <div class="row2">
+      <div class="panel"><h2>C3. 국가별 서비스 건수 TOP 25</h2><div id="sto-c3" class="chart" style="height:300px"></div></div>
+      <div class="panel"><h2>C5. 부품 발송 — 지역별 (건수·금액)</h2><div id="sto-c5" class="chart" style="height:300px"></div></div>
+    </div>
+    <div class="panel"><h2>C1. 제품분류 × 보증구분 <span class="muted" style="font-weight:400;font-size:11px">· 2026 누계 건수</span></h2>
+      <div class="scroll"><table id="sto-c1"></table></div>
+      <div id="sto-c1-note" class="muted" style="font-size:11px;line-height:1.5;padding:6px 4px 0"></div></div>
+    <h2 style="margin:18px 2px 8px;font-size:14px">Ⅳ. 채권(미수금) <span class="muted" style="font-weight:400;font-size:11px">· 통화별 원화 미환산 · M+D팀</span></h2>
+    <div class="row2">
+      <div class="panel"><h2>R1. 채널구분 × 통화 — 잔액</h2><div class="scroll"><table id="sto-r1"></table></div></div>
+      <div class="panel"><h2>R2. 연체여부 × 통화 — 잔액</h2><div class="scroll"><table id="sto-r2"></table></div></div>
+    </div>
+    <div class="panel"><h2>R3. 국가별 잔액 TOP 25</h2><div class="scroll"><table id="sto-r3"></table></div></div>
+  </section>
+
   <section id="tab-data" hidden>
     <div class="panel">
       <h2>엑셀 업로드</h2>
@@ -161,647 +163,6 @@
   </section>
 </main>
 
-<script>
-const api = (p) => fetch(p, {cache: "no-store"}).then(r => r.json());
-const won = (n) => "₩" + Math.round(Number(n)||0).toLocaleString("ko-KR");
-const num = (n) => (Number(n)||0).toLocaleString("ko-KR");
-// 서버 시각(UTC, TIMESTAMPTZ)을 브라우저 로컬(한국) 시간으로 변환해 'MM-DD HH:mm' 표기
-const fmtTime = (s) => {
-  if(!s) return "–";
-  const iso = /(Z|[+-]\d\d:?\d\d)$/.test(s) ? s : s.replace(" ","T") + "Z";
-  const d = new Date(iso);
-  if(isNaN(d)) return String(s).slice(0,16).replace("T"," ");
-  const p = (x)=>String(x).padStart(2,"0");
-  return `${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
-};
-const el = (id) => document.getElementById(id);
-const esc = (s) => (s==null?"":String(s)).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-const charts = {};
-function chart(id, opt){
-  if(!charts[id]) charts[id] = echarts.init(el(id));
-  charts[id].setOption(opt, true); charts[id].resize();
-}
-window.addEventListener("resize", () => Object.values(charts).forEach(c=>c.resize()));
-const TXT = "#cbd5e6";                                  // 차트 축·범례 글씨 (대비 강화)
-const AX = { textStyle:{color:TXT}, axisLabel:{color:TXT}, nameTextStyle:{color:TXT},
-  axisLine:{lineStyle:{color:"#4a5a76"}}, splitLine:{lineStyle:{color:"#26324a"}} };
-const LEG = { textStyle:{color:TXT} };
-const PAL = ["#818cf8","#38dcf0","#4ade80","#fbbf24","#f87171","#c084fc","#f472b6","#a3e635"];
-const PIE = ["#818cf8","#38dcf0","#4ade80","#fbbf24","#f472b6","#c084fc","#fb923c","#a3e635","#22d3ee","#f87171","#94a3b8"];
-// 팀(조직) 표시명 & 정렬 순서 — 부산지사는 K Tech 에 통합
-const ORG_ORDER = ["D","M","K"];
-const ORG_NAME  = {D:"D Tech", M:"M Tech", K:"K Tech", "부산":"K Tech"};
-const orgLabel  = (o) => ORG_NAME[o] || o;
-const orgRank   = (o) => { const i = ORG_ORDER.indexOf(o==="부산"?"K":o); return i<0 ? 99 : i; };
-const teamLabel = (t) => ORG_NAME[t] || (t + " Tech");   // 주간 team_code(D/M/K) 용
-function donut(arr){return {tooltip:{trigger:"item"},legend:{bottom:0,...LEG},
-  series:[{type:"pie",radius:["45%","70%"],center:["50%","45%"],
-  label:{color:"#f1f5f9",formatter:"{b}\n{d}%"},
-  data:arr.map((r,i)=>({name:r.k,value:r.n,itemStyle:{color:PAL[i%PAL.length]}}))}]};}
-
-document.querySelectorAll("nav button").forEach(b=>{
-  b.onclick = () => {
-    document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on", x===b));
-    ["as","weekly","map","tickets","recv","data"].forEach(t=> el("tab-"+t).hidden = (t!==b.dataset.tab));
-    setTimeout(()=>Object.values(charts).forEach(c=>c.resize()), 40);
-    if(b.dataset.tab==="map") loadMap();
-    if(b.dataset.tab==="data") loadBatches();
-    if(b.dataset.tab==="recv") loadRecv();
-  };
-});
-
-// ========== AS 분석 ==========
-async function loadAS(){
-  const o = await api("/api/as/overview");
-  const tr = await api("/api/dashboard/trend?metric=revenue_krw&year=2026");
-  const asRevYtd = tr.reduce((s,r)=>s+Number(r.value||0),0);
-  const lastM = tr.length? Math.max(...tr.map(r=>r.month)) : null;
-  const repairSum = o.by_line.reduce((s,r)=>s+Number(r.krw||0),0);
-  el("as-cards").innerHTML = [
-    ["AS 내역 총계", num(o.total), "구글시트 건별 데이터"],
-    ["유상 비율", ((o.warranty.find(w=>w.k==="유상")?.n||0)*100/o.total).toFixed(1)+"%",
-      num(o.warranty.find(w=>w.k==="유상")?.n||0)+"건 유상"],
-    ["연 누계 AS매출", won(asRevYtd), lastM?`1~${lastM}월 · D=월간보고, M·K=통합시트`:"월간보고 필요"],
-    ["수리비 합계(건별)", won(repairSum), "구글시트 수리비용 합 (D테크 미기재)"],
-  ].map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="s">${c[2]}</div></div>`).join("");
-
-  // 팀별 AS 건수 비중: 도넛 (막대는 K테크가 커서 편차가 심함). 툴팁에 유상률.
-  const L=[...o.by_line].sort((a,b)=> orgRank(a.org)-orgRank(b.org));
-  chart("c-byline",{
-    tooltip:{trigger:"item",formatter:p=>{const l=L[p.dataIndex];
-      return `${p.name}<br/>건수 ${num(l.n)} (${p.percent}%)<br/>유상 ${num(l.paid_n)} (${(l.paid_n*100/l.n).toFixed(0)}%)`;}},
-    legend:{...LEG,orient:"vertical",right:12,top:"middle",
-      formatter:name=>{const l=L.find(x=>orgLabel(x.org)===name);
-        return l?`${name}  ${num(l.n)}건 · 유상 ${(l.paid_n*100/l.n).toFixed(0)}%`:name;}},
-    series:[{type:"pie",radius:["45%","72%"],center:["30%","52%"],
-      label:{show:true,color:TXT,fontSize:11,formatter:p=>`${p.name}\n${num(p.value)}건 ${p.percent}%`},
-      labelLine:{show:true,length:8,length2:10},
-      data:L.map(l=>({name:orgLabel(l.org),value:l.n,
-        itemStyle:{color:PAL[orgRank(l.org)%PAL.length]}}))}]});
-
-  // 시정조치·불량 구분: 도넛. 전체의 2% 미만 항목은 '그 외 (N종)' 으로 묶음.
-  const fxAll=[...o.fix_class].filter(f=>f.k!=="(미상)").sort((a,b)=>b.n-a.n);
-  const fxThresh = o.total*0.03;   // 전체의 3% 미만은 묶음
-  const fxBig = fxAll.filter(f=>f.n>=fxThresh);
-  const fxSmall = fxAll.filter(f=>f.n<fxThresh);
-  const fxData = fxBig.map(f=>({k:f.k,n:f.n}));
-  if(fxSmall.length) fxData.push({k:`그 외 ${fxSmall.length}종`, n:fxSmall.reduce((s,f)=>s+f.n,0),
-                                  detail:fxSmall.map(f=>`${f.k} ${f.n}`).join(", ")});
-  const PIE=["#818cf8","#38dcf0","#4ade80","#fbbf24","#f472b6","#c084fc","#fb923c","#a3e635","#22d3ee","#f87171","#94a3b8"];
-  const fxTotal = fxData.reduce((s,r)=>s+r.n,0);
-  chart("c-fix",{
-    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>${num(p.value)}건 (${p.percent}%)`
-      + (p.data.detail?`<br/><span style="color:#9aa7bd">${p.data.detail}</span>`:"")},
-    legend:{type:"plain",bottom:6,left:"center",width:"96%",...LEG,itemWidth:11,itemHeight:8,itemGap:10,
-      textStyle:{color:TXT,fontSize:10.5},
-      formatter:name=>{const d=fxData.find(x=>x.k===name);
-        return d?`${name} ${(d.n*100/fxTotal).toFixed(0)}%`:name;}},
-    series:[{type:"pie",radius:["40%","60%"],center:["50%","41%"],
-      label:{show:true,color:TXT,fontSize:11,formatter:p=>`${p.name} ${num(p.value)}건 ${p.percent}%`},
-      labelLine:{show:true,length:10,length2:14},
-      minAngle:4,avoidLabelOverlap:true,
-      data:fxData.map((r,i)=>({name:r.k,value:r.n,detail:r.detail,itemStyle:{color:PIE[i%PIE.length]}}))}]});
-  const fxOther=fxData.find(r=>r.detail);
-  el("fx-note").textContent = fxOther ? `${fxOther.k} 상세 — ${fxOther.detail}` : "";
-
-  chart("c-warr", donut(o.warranty));
-
-  const m = await api("/api/as/monthly");
-  const mo=[...new Set([...m.map(r=>r.month), ...tr.map(r=>r.month)])].filter(x=>x!=null).sort((a,b)=>a-b);
-  const orgs=[...new Set(m.map(r=>r.org))].sort((a,b)=>orgRank(a)-orgRank(b));
-  const narrow = window.innerWidth < 620;
-  chart("c-monthly",{grid:{left:52,right:narrow?46:70,top:34,bottom:26},tooltip:{trigger:"axis"},
-    legend:{...LEG,type:"scroll",top:0,itemWidth:14,itemHeight:8,textStyle:{color:TXT,fontSize:11}},
-    xAxis:{type:"category",data:mo.map(x=>x+"월"),...AX,axisLabel:{color:TXT,fontSize:11}},
-    yAxis:[{type:"value",name:"건수",...AX,nameTextStyle:{color:TXT,fontSize:10}},
-           {type:"value",name:"AS매출",...AX,splitLine:{show:false},nameTextStyle:{color:TXT,fontSize:10},
-            axisLabel:{color:TXT,fontSize:10,formatter:v=>v<=0?"0":v>=1e8?(v/1e8)+"억":Math.round(v/1e6)+"백만"}}],
-    series:[...orgs.map((org)=>({name:orgLabel(org),type:"bar",barMaxWidth:11,barGap:"25%",
-        data:mo.map(x=>m.find(r=>r.month===x&&r.org===org)?.n||0),
-        itemStyle:{color:PAL[orgRank(org)%PAL.length],borderRadius:[3,3,0,0]}})),
-      {name:"AS매출",type:"line",yAxisIndex:1,smooth:true,symbolSize:5,itemStyle:{color:"#fbbf24"},
-        data:mo.map(x=>tr.filter(r=>r.month===x).reduce((s,r)=>s+Number(r.value||0),0))}]});
-
-  const bm = (await api("/api/as/by-model?limit=10"));
-  chart("c-bymodel",{grid:{left:120,right:52,top:8,bottom:18},
-    tooltip:{trigger:"axis",axisPointer:{type:"shadow"},
-      formatter:p=>`${p[0].name}<br/>건수 ${num(p[0].value)}<br/>유상 ${num(bm[p[0].dataIndex].paid_n)}건`},
-    xAxis:{type:"value",...AX,axisLabel:{show:false},splitLine:{show:false}},
-    yAxis:{type:"category",...AX,inverse:true,
-      axisLabel:{color:TXT,interval:0,fontSize:10.5,width:112,overflow:"truncate"},
-      data:bm.map(r=>r.product_model)},
-    series:[{type:"bar",barWidth:13,data:bm.map(r=>r.n),
-      itemStyle:{color:"#4ade80",borderRadius:3},
-      label:{show:true,position:"right",color:TXT,fontSize:11,formatter:p=>num(p.value)}}]});
-
-  const rp = await api("/api/as/repeat?min_count=3&limit=50");
-  el("t-repeat").innerHTML =
-    "<tr><th>제조번호</th><th>모델</th><th>팀</th><th class='num'>AS 건수</th><th>최근 출하처</th></tr>" +
-    rp.map(r=>`<tr><td>${esc(r.serial_no)}</td><td>${esc(r.model)}</td><td>${esc(orgLabel(r.org))}</td>
-      <td class="num">${r.n}</td><td>${esc(r.last_site)}</td></tr>`).join("");
-}
-
-// ========== 월별 실적 (월간보고 매트릭스 기준) ==========
-const loadWeeklyInit = () => loadMonthly();
-async function metricSeries(metric){
-  const tr = await api(`/api/dashboard/trend?metric=${metric}&year=2026`);
-  const mo=[...new Set(tr.map(r=>r.month))].sort((a,b)=>a-b);
-  const tm=["D","M","K"];
-  return {mo, tm, val:(mm,x)=>tr.find(r=>r.month===mm&&r.team_code===x)?.value||0, raw:tr};
-}
-function lineChart(id, s, fmt){
-  chart(id,{grid:{left:58,right:16,top:30,bottom:26},
-    tooltip:{trigger:"axis",valueFormatter:fmt},
-    legend:{...LEG,type:"scroll",top:0,itemWidth:14,itemHeight:8,textStyle:{color:TXT,fontSize:11}},
-    xAxis:{type:"category",data:s.mo.map(x=>x+"월"),...AX,axisLabel:{color:TXT,fontSize:11}},
-    yAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,
-      formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"억":v>=1e6?(v/1e6).toFixed(0)+"백만":num(v)}},
-    series:s.tm.map(x=>({name:teamLabel(x),type:"line",smooth:true,symbolSize:5,
-      itemStyle:{color:PAL[orgRank(x)%PAL.length]},
-      data:s.mo.map(mm=>s.val(mm,x))}))});
-}
-async function loadMonthly(){
-  const rev = await metricSeries("revenue_krw");
-  if(!rev.mo.length){
-    el("trend-note").textContent = "월간보고(월간 실적) 파일을 데이터 관리 탭에서 올리면 채워집니다.";
-    el("wk-cards").innerHTML=""; el("t-weekly").innerHTML=""; return;
-  }
-  el("trend-note").textContent="";
-  const svc = await metricSeries("service_cnt");
-  const inb = await metricSeries("inbound_cnt");
-  const lastM = Math.max(...rev.mo);
-  const sum = x => rev.mo.reduce((a,mm)=>a+rev.val(mm,x),0);
-  const ytd = ["D","M","K"].reduce((a,x)=>a+sum(x),0);
-  const lastTot = ["D","M","K"].reduce((a,x)=>a+rev.val(lastM,x),0);
-  el("wk-cards").innerHTML = [
-    [`${lastM}월 AS매출`, won(lastTot), "D=월간보고 · M·K=통합시트"],
-    ["연 누계 AS매출", won(ytd), `1~${lastM}월`],
-    [`${lastM}월 서비스`, num(["D","M","K"].reduce((a,x)=>a+svc.val(lastM,x),0))+"건", ""],
-    [`${lastM}월 Inbound`, num(["D","M","K"].reduce((a,x)=>a+inb.val(lastM,x),0))+"건", ""],
-  ].map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="s">${c[2]}</div></div>`).join("");
-
-  lineChart("c-trend", rev, v=>won(v));
-  // 팀별 누계: 1월부터 해당 월까지 매출 누적
-  const cumVal = (mm,x)=>rev.mo.filter(k=>k<=mm).reduce((a,k)=>a+rev.val(k,x),0);
-  lineChart("c-trend-cum", {mo:rev.mo, tm:rev.tm, val:cumVal}, v=>won(v));
-  lineChart("c-svc", svc, v=>num(v)+"건");
-  lineChart("c-inb", inb, v=>num(v)+"건");
-
-  const cell = (v,c)=>`<td class="num">${won(v)}<br><span class="muted" style="font-size:11px">∑ ${won(c)}</span></td>`;
-  el("t-weekly").innerHTML =
-    "<tr><th>월</th><th class='num'>D Tech<br><span class='muted' style='font-weight:400;font-size:11px'>당월 / 누계</span></th>"
-    + "<th class='num'>M Tech<br><span class='muted' style='font-weight:400;font-size:11px'>당월 / 누계</span></th>"
-    + "<th class='num'>K Tech<br><span class='muted' style='font-weight:400;font-size:11px'>당월 / 누계</span></th>"
-    + "<th class='num'>합계<br><span class='muted' style='font-weight:400;font-size:11px'>당월 / 누계</span></th></tr>" +
-    rev.mo.map(mm=>{const d=rev.val(mm,"D"),m=rev.val(mm,"M"),k=rev.val(mm,"K");
-      const cd=cumVal(mm,"D"),cm=cumVal(mm,"M"),ck=cumVal(mm,"K");
-      return `<tr><td>${mm}월</td>${cell(d,cd)}${cell(m,cm)}${cell(k,ck)}${cell(d+m+k,cd+cm+ck)}</tr>`;}).join("")
-    + `<tr><td><b>연 누계</b></td><td class="num"><b>${won(sum("D"))}</b></td><td class="num"><b>${won(sum("M"))}</b></td>
-        <td class="num"><b>${won(sum("K"))}</b></td><td class="num"><b>${won(ytd)}</b></td></tr>`;
-}
-
-// ========== 지도 ==========
-let worldReady=false, krReady=false, mapDataLoaded=false;
-const KR_MAP = {  // region_kr → GeoJSON name
-  "서울":"서울특별시","경기":"경기도","인천":"인천광역시","강원":"강원도",
-  "충청":"충청남도","충북":"충청북도","충남":"충청남도","대전":"대전광역시","세종":"세종특별자치시",
-  "전라":"전라남도","전북":"전라북도","전남":"전라남도","광주":"광주광역시",
-  "경상":"경상남도","경북":"경상북도","경남":"경상남도","대구":"대구광역시","울산":"울산광역시","부산":"부산광역시",
-  "제주":"제주특별자치도"
-};
-async function loadMap(){
-  if(mapDataLoaded){ Object.values(charts).forEach(c=>c.resize()); return; }
-  mapDataLoaded = true;
-
-  // world
-  const d = await api("/api/as/countries");
-  el("wm-note").textContent = "건수 = 구글시트 건별 · 채권 청구액 = 매출채권 탭 청구금액 합(원환산)";
-  el("t-country").innerHTML =
-    "<tr><th>국가</th><th>ISO3</th><th>권역</th><th class='num'>AS 건수</th><th class='num'>채권 청구액</th><th class='num'>미회수잔액</th></tr>" +
-    d.rows.map(r=>`<tr><td>${esc(r.country)}</td><td>${r.iso3||"–"}</td><td>${esc(r.region_group)}</td>
-      <td class="num">${num(r.n)}</td><td class="num">${r.revenue_krw?won(r.revenue_krw):"–"}</td>
-      <td class="num">${r.balance_krw?won(r.balance_krw):"–"}</td></tr>`).join("");
-  if(!worldReady){
-    try{ echarts.registerMap("world", await fetch("/vendor/world.json").then(r=>r.json())); worldReady=true; }
-    catch(e){ el("wm-note").textContent="세계 지도 로드 실패: "+e; }
-  }
-  const pts=d.rows.filter(r=>r.lat!=null).map(r=>({name:r.country,value:[+r.lng,+r.lat,r.n],krw:r.revenue_krw}));
-  const mx=Math.max(1,...pts.map(p=>p.value[2]));
-  chart("c-worldmap", worldReady ? {
-    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>AS ${num(p.value[2])}건`
-      + (p.data.krw?`<br/>채권 청구액 ${won(p.data.krw)}`:"")},
-    geo:{map:"world",roam:true,silent:true,layoutCenter:["50%","54%"],layoutSize:"138%",
-      itemStyle:{areaColor:"#243044",borderColor:"#475569"}},
-    series:[{type:"effectScatter",coordinateSystem:"geo",data:pts,
-      symbolSize:v=>8+38*Math.sqrt(v[2]/mx),rippleEffect:{scale:2.2},
-      itemStyle:{color:"#22d3ee",shadowBlur:8,shadowColor:"#22d3ee"}}]
-  } : {grid:{left:90,right:20,top:10,bottom:24},xAxis:{type:"value",...AX},
-      yAxis:{type:"category",inverse:true,...AX,data:d.rows.slice(0,20).map(r=>r.country)},
-      tooltip:{trigger:"axis"},series:[{type:"bar",data:d.rows.slice(0,20).map(r=>r.n),itemStyle:{color:"#22d3ee"}}]});
-
-  // korea
-  const kr = await api("/api/as/kr-regions");
-  const agg={};
-  kr.rows.forEach(r=>{ const nm=KR_MAP[r.region]||null; if(!nm) return;
-    agg[nm]=agg[nm]||{n:0,krw:0}; agg[nm].n+=r.n; agg[nm].krw+=Number(r.krw||0); });
-  el("t-krregion").innerHTML =
-    "<tr><th>시·도</th><th>팀</th><th class='num'>건수</th><th class='num'>수리매출</th></tr>" +
-    [...kr.rows].sort((a,b)=>orgRank(a.org)-orgRank(b.org)||b.n-a.n)
-      .map(r=>`<tr><td>${esc(r.region)}</td><td>${esc(orgLabel(r.org))}</td>
-      <td class="num">${num(r.n)}</td><td class="num">${won(r.krw)}</td></tr>`).join("");
-  el("kr-note").textContent = kr.filled < kr.domestic_total
-    ? `국내 ${num(kr.domestic_total)}건 중 ${num(kr.filled)}건 시·도 매핑됨 (나머지는 재적재 후 반영)` : "";
-  if(!krReady){
-    try{ echarts.registerMap("korea", await fetch("/vendor/korea.json").then(r=>r.json())); krReady=true; }
-    catch(e){ el("kr-note").textContent += "  한국 지도 로드 실패: "+e; }
-  }
-  const kdata=Object.entries(agg).map(([name,v])=>({name,value:v.n,krw:v.krw}));
-  const kmx=Math.max(1,...kdata.map(d=>d.value));
-  chart("c-krmap", krReady ? {
-    tooltip:{trigger:"item",formatter:p=>`${p.name}<br/>AS ${num(p.value||0)}건` + (p.data?`<br/>수리비 ${won(p.data.krw)}`:"")},
-    visualMap:{min:0,max:kmx,right:12,bottom:12,calculable:true,
-      inRange:{color:["#334769","#6366f1","#c7d2fe"]},...LEG},
-    series:[{type:"map",map:"korea",roam:true,data:kdata,layoutCenter:["50%","52%"],layoutSize:"118%",
-      label:{show:true,color:"#f8fafc",fontSize:10,fontWeight:700,textBorderColor:"#0f172a",textBorderWidth:2.5},
-      itemStyle:{borderColor:"#475569"},emphasis:{label:{color:"#fff"},itemStyle:{areaColor:"#22d3ee"}}}]
-  } : {grid:{left:80,right:20,top:10,bottom:24},xAxis:{type:"value",...AX},
-      yAxis:{type:"category",inverse:true,...AX,data:kdata.map(d=>d.name)},tooltip:{trigger:"axis"},
-      series:[{type:"bar",data:kdata.map(d=>d.value),itemStyle:{color:"#6366f1"}}]});
-}
-
-// ========== 티켓 조회 ==========
-let tkState={org:"",line:"",month:"",warr:"",q:""}, tkTimer;
-async function initTickets(){
-  const f = await api("/api/as/filters");
-  const orgsOrdered = [...f.orgs].sort((a,b)=>orgRank(a)-orgRank(b));
-  el("tk-org").innerHTML = ['<span class="muted">팀</span>',
-    `<span class="chip on" data-v="">전체</span>`,
-    ...orgsOrdered.map(o=>`<span class="chip" data-v="${o}">${orgLabel(o)}</span>`)].join("");
-  el("tk-org").querySelectorAll(".chip").forEach(c=>c.onclick=()=>{
-    el("tk-org").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===c));
-    tkState.org=c.dataset.v; loadTickets();
-  });
-  el("tk-line").innerHTML = '<option value="">전체 장비군</option>' +
-    f.product_lines.map(l=>`<option>${l}</option>`).join("");
-  el("tk-month").innerHTML = '<option value="">전체 월(조치일)</option>' +
-    f.months.map(m=>`<option value="${m}">${m}월(조치)</option>`).join("");
-  ["tk-line","tk-month","tk-warr"].forEach(id=> el(id).onchange = e=>{
-    tkState[id==="tk-line"?"line":id==="tk-month"?"month":"warr"]=e.target.value; loadTickets(); });
-  el("tk-q").oninput = e=>{ clearTimeout(tkTimer); tkState.q=e.target.value.trim();
-    tkTimer=setTimeout(loadTickets,300); };
-  loadTickets();
-}
-async function loadTickets(){
-  const p=new URLSearchParams({limit:"2000"});
-  if(tkState.org) p.set("org",tkState.org);
-  if(tkState.line) p.set("product_line",tkState.line);
-  if(tkState.month) p.set("month",tkState.month);
-  if(tkState.warr) p.set("warranty",tkState.warr);
-  if(tkState.q) p.set("q",tkState.q);
-  const d = await api("/api/as/tickets?"+p);
-  el("tk-count").textContent = `${num(d.returned)} / 총 ${num(d.total)}건` + (d.returned<d.total?" (상위 2000)":"");
-  el("t-tickets").innerHTML =
-    "<tr><th>조치일</th><th>접수일</th><th>팀</th><th>장비군</th><th>출하처</th><th>지역</th><th>모델</th><th>보증</th>"+
-    "<th>증상</th><th>원인</th><th>조치</th><th class='num'>수리비</th></tr>" +
-    d.rows.map(r=>`<tr>
-      <td>${(r.action_date||"").slice(0,10)}</td><td class="muted">${(r.received_date||"").slice(0,10)}</td><td>${esc(orgLabel(r.org))}</td><td>${esc(r.product_line)}</td>
-      <td title="${esc(r.shipped_to)}">${esc((r.shipped_to||"").slice(0,18))}</td>
-      <td>${esc(r.region_kr||r.country)}</td><td>${esc(r.product_model)}</td><td>${esc(r.warranty)}</td>
-      <td title="${esc(r.symptom)}">${esc((r.symptom||"").slice(0,40))}</td>
-      <td title="${esc(r.cause)}">${esc((r.cause||"").slice(0,28))}</td><td>${esc(r.fix_class)}</td>
-      <td class="num">${r.repair_amount?(r.repair_currency==="KRW"?won(r.repair_amount):r.repair_currency+" "+num(r.repair_amount)):""}</td>
-    </tr>`).join("");
-}
-
-// ========== KPI ==========
-let kpiLoaded=false;
-const kTeam = t => (t==="공통"||!t) ? "공통" : (ORG_NAME[t] || t+" Tech");
-function kpiBar(id, rows, key){
-  const R=[...rows].sort((a,b)=> (key==="team"? orgRank(a.team==="공통"?"z":a.team)-orgRank(b.team==="공통"?"z":b.team) : 0));
-  chart(id,{grid:{left:120,right:44,top:10,bottom:24},
-    tooltip:{trigger:"axis",axisPointer:{type:"shadow"},
-      formatter:p=>`${p[0].name}<br/>${R[p[0].dataIndex].done}/${R[p[0].dataIndex].total}건 (${p[0].value}%)`},
-    xAxis:{type:"value",min:0,max:100,interval:25,axisLine:{lineStyle:{color:"#4a5a76"}},
-      splitLine:{lineStyle:{color:"#26324a"}},axisLabel:{color:TXT,formatter:"{value}%"}},
-    yAxis:{type:"category",axisLine:{lineStyle:{color:"#4a5a76"}},inverse:true,
-      axisLabel:{color:TXT,interval:0},
-      data:R.map(r=> key==="team"? kTeam(r.team) : r.category)},
-    series:[{type:"bar",data:R.map(r=>Number(r.pct)),barWidth:16,
-      itemStyle:{color:"#4ade80",borderRadius:4},
-      label:{show:true,position:"right",color:TXT,formatter:p=>p.value+"%"}}]});
-}
-async function loadKPI(){
-  const d = await api("/api/dashboard/kpi");
-  if(!d.overall){ el("kpi-cards").innerHTML='<div class="card"><div class="k">KPI</div><div class="v">데이터 없음</div><div class="s">월간 실적 파일을 올리면 표시됩니다</div></div>'; return; }
-  const o=d.overall;
-  el("kpi-cards").innerHTML=[
-    [`달성 (${d.period_label||"-"})`, o.pct+"%", `${o.done} / ${o.total}건 완료`],
-    ["카테고리", d.by_category.length+"개", d.by_category.map(c=>c.category).join(" · ")],
-    ["다음 달 계획", (d.plan?.count||0)+"건", (d.plan?.month? d.plan.month+"월 ":"")+"착수 예정"],
-  ].map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="s">${esc(c[2])}</div></div>`).join("");
-
-  kpiBar("c-kpi-cat", d.by_category, "cat");
-  kpiBar("c-kpi-team", d.by_team, "team");
-
-  const t=d.trend;
-  if(t.length){
-    chart("c-kpi-trend",{grid:{left:44,right:52,top:30,bottom:26},
-      tooltip:{trigger:"axis",formatter:p=>{const r=t[p[0].dataIndex];
-        return `${p[0].name}<br/>월 ${r.done}/${r.total}건 (${r.pct}%)<br/>누계 ${r.cum_done}/${r.cum_total}건 (${r.cum_pct}%)`;}},
-      legend:{...LEG,top:0,itemWidth:14,itemHeight:8,textStyle:{color:TXT,fontSize:11}},
-      xAxis:{type:"category",data:t.map(r=>r.month+"월"),...AX},
-      yAxis:[{type:"value",...AX,name:"건수",nameTextStyle:{color:TXT,fontSize:10}},
-             {type:"value",max:100,...AX,splitLine:{show:false},axisLabel:{color:TXT,formatter:"{value}%"}}],
-      series:[
-        {name:"월 목표",type:"bar",barMaxWidth:14,data:t.map(r=>r.total),itemStyle:{color:"#3b4a66",borderRadius:[3,3,0,0]}},
-        {name:"월 달성",type:"bar",barMaxWidth:14,barGap:"-100%",data:t.map(r=>r.done),itemStyle:{color:"#4ade80",borderRadius:[3,3,0,0]}},
-        {name:"누계 달성률",type:"line",yAxisIndex:1,smooth:true,symbolSize:5,data:t.map(r=>Number(r.cum_pct)),
-          itemStyle:{color:"#fbbf24"},label:{show:true,color:TXT,fontSize:10,formatter:"{c}%"}}]});
-  }else{
-    chart("c-kpi-trend",{graphic:{type:"text",left:"center",top:"middle",
-      style:{text:"월별 데이터 없음\n월간보고를 월별로 업로드하면 채워집니다",fill:TXT,fontSize:12,lineHeight:18,textAlign:"center"}}});
-  }
-
-  el("kpi-plan-h").textContent = `${d.plan?.month||""}월 계획 (${d.plan?.count||0}건)`;
-  el("t-kpi-plan").innerHTML =
-    "<tr><th>카테고리</th><th>담당</th><th>목표</th></tr>" +
-    (d.plan?.items||[]).map(p=>`<tr><td>${esc(p.category)}</td><td>${esc(kTeam(p.team_code))}</td>
-      <td style="white-space:normal">${esc(p.goal_text)}</td></tr>`).join("");
-
-  el("kpi-done-h").textContent = `실적 항목 (${o.done}건)`;
-  el("t-kpi-done").innerHTML =
-    "<tr><th>카테고리</th><th>담당</th><th>목표</th><th>실적</th><th>달성</th></tr>" +
-    d.items.map(k=>`<tr><td>${esc(k.category)}</td><td>${esc(kTeam(k.team_code))}</td>
-      <td style="white-space:normal">${esc(k.goal_text)}</td>
-      <td style="white-space:normal">${esc(k.result_text)}</td>
-      <td>${Number(k.achieved)>=1?"✓":"–"}</td></tr>`).join("");
-  kpiLoaded=true;
-}
-
-// ========== 사업계획 (구글시트 실행계획) ==========
-let planLoaded=false;
-async function loadPlan(){
-  const d = await api("/api/plan/overview");
-  const wrap = el("plan-cards");
-  if(!d || !d.items.length){
-    wrap.innerHTML='<div class="card"><div class="k">사업계획</div><div class="v">데이터 없음</div><div class="s">데이터 관리 탭에서 사업계획 구글시트를 등록·동기화하세요</div></div>';
-    planLoaded=true; return;
-  }
-  const T=d.totals, MO=d.monthly;
-  wrap.innerHTML=[
-    ["실행과제", T.tasks+"건", d.by_category.map(c=>c.category+" "+c.tasks).join(" · ")],
-    ["연간 목표 합계", num(T.goal_n)+"건", "'총 N건/N회' 명시 과제 기준"],
-    ["담당", d.by_team.length+"팀", d.by_team.map(t=>plTeam(t.team)+" "+t.tasks).join(" · ")],
-    ["평균 진행률", T.has_progress? T.avg_progress+"%" : "미입력", T.has_progress? "시트 진행률 칸 평균" : "시트에 진행률 칸이 비어 있음"],
-  ].map(c=>`<div class="card"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="s">${esc(c[2])}</div></div>`).join("");
-
-  // 월별 계획 활동(분류별 그룹 막대) + 누계 라인
-  const cats = d.by_category.map(c=>c.category);
-  chart("c-plan-monthly",{grid:{left:44,right:52,top:34,bottom:26},tooltip:{trigger:"axis"},
-    legend:{...LEG,type:"scroll",top:0,itemWidth:14,itemHeight:8,textStyle:{color:TXT,fontSize:11}},
-    xAxis:{type:"category",data:MO.map(r=>r.month+"월"),...AX},
-    yAxis:[{type:"value",name:"과제 수",...AX,nameTextStyle:{color:TXT,fontSize:10}},
-           {type:"value",name:"누계",...AX,splitLine:{show:false},nameTextStyle:{color:TXT,fontSize:10}}],
-    series:[
-      ...cats.map((c,i)=>({name:c,type:"bar",stack:"a",barMaxWidth:22,
-        data:MO.map(r=>r[c]||0),itemStyle:{color:PIE[i%PIE.length]}})),
-      {name:"누계",type:"line",yAxisIndex:1,smooth:true,symbolSize:4,data:MO.map(r=>r.cum),
-        itemStyle:{color:"#fbbf24"}}]});
-
-  // 분류별 과제/목표
-  const bc=d.by_category;
-  chart("c-plan-cat",{grid:{left:96,right:40,top:10,bottom:20},tooltip:{trigger:"axis",axisPointer:{type:"shadow"},
-      formatter:p=>`${p[0].name}<br/>실행과제 ${bc[p[0].dataIndex].tasks}건<br/>연간 목표 ${num(bc[p[0].dataIndex].goal_n)}건`},
-    xAxis:{type:"value",...AX,splitLine:{show:false}},
-    yAxis:{type:"category",...AX,inverse:true,axisLabel:{color:TXT,fontSize:11},data:bc.map(c=>c.category)},
-    series:[
-      {name:"과제",type:"bar",barWidth:13,data:bc.map(c=>c.tasks),itemStyle:{color:"#818cf8",borderRadius:3},
-        label:{show:true,position:"right",color:TXT,fontSize:11,formatter:p=>p.value+"건"}},
-      {name:"연간목표",type:"bar",barWidth:13,data:bc.map(c=>c.goal_n),itemStyle:{color:"#38dcf0",borderRadius:3},
-        label:{show:true,position:"right",color:TXT,fontSize:11,formatter:p=>p.value?p.value+"건":""}}]});
-
-  const bt=d.by_team;
-  chart("c-plan-team",{tooltip:{trigger:"item",formatter:p=>{const r=bt[p.dataIndex];
-      return `${p.name}<br/>실행과제 ${r.tasks}건 (${p.percent}%)<br/>연간 목표 ${num(r.goal_n)}건`;}},
-    legend:{...LEG,orient:"vertical",right:8,top:"middle",formatter:name=>{
-      const r=bt.find(x=>plTeam(x.team)===name); return r?`${name}  ${r.tasks}건`:name;}},
-    series:[{type:"pie",radius:["44%","70%"],center:["34%","52%"],
-      label:{show:true,color:TXT,fontSize:11,formatter:p=>`${p.name}\n${p.value}건`},
-      labelLine:{show:true,length:8,length2:10},
-      data:bt.map((r,i)=>({name:plTeam(r.team),value:r.tasks,itemStyle:{color:PAL[i%PAL.length]}}))}]});
-
-  // 로드맵 표
-  const mhead = Array.from({length:12},(_,i)=>`<th style="text-align:center">${i+1}</th>`).join("");
-  el("t-plan").innerHTML =
-    `<tr><th>분류</th><th>실행계획</th><th>담당</th><th class='num'>연 목표</th>${mhead}</tr>` +
-    d.items.map(it=>{
-      let mm={}; try{ mm=JSON.parse(it.months||"{}"); }catch(e){}
-      const cells = Array.from({length:12},(_,i)=>{
-        const v=(mm[i+1]||"").trim();
-        return `<td style="text-align:center" title="${esc(v)}">${v?'<span style="color:#4ade80">●</span>':'<span style="color:#33415a">·</span>'}</td>`;
-      }).join("");
-      return `<tr><td>${esc(it.category)}</td><td style="white-space:normal">${esc(it.plan_name)}</td>
-        <td>${esc(plTeam(it.team_code||it.team_label))}</td>
-        <td class="num">${it.goal_n?num(it.goal_n)+"건":"–"}</td>${cells}</tr>`;
-    }).join("");
-  planLoaded=true;
-}
-function plTeam(t){
-  if(t==null) return "공통";
-  const s=String(t);
-  if(s==="D"||s==="M"||s==="K") return s+" Tech";
-  if(s.includes("공통")||s.includes("TS본부")) return "공통";
-  return s;
-}
-
-// ========== 엑셀 업로드 ==========
-async function refreshMeta(){
-  try{
-    const b = await api("/api/batches?limit=999");
-    const fmt={}; b.forEach(x=>fmt[x.format_detected]=(fmt[x.format_detected]||0)+1);
-    el("meta").textContent = `배치 ${b.length} · ${Object.entries(fmt).map(([k,v])=>k+" "+v).join(" · ")} · 최근 ${fmtTime(b[0]?.uploaded_at)}`;
-  }catch(e){ el("meta").textContent="API 연결 실패: "+e; }
-}
-async function uploadFiles(files){
-  files=[...(files||[])].filter(f=>/\.(xlsx|xlsm|xls|pdf)$/i.test(f.name||""));
-  if(!files.length){ el("upmsg").textContent="엑셀(.xlsx) 또는 월간보고 PDF를 선택하거나 끌어다 놓으세요."; return; }
-  const lines=[]; let okN=0, failN=0;
-  for(const f of files){
-    el("upmsg").innerHTML = lines.concat(`업로드 중… ${esc(f.name)}`).join("<br>");
-    try{
-      const fd=new FormData(); fd.append("file", f);
-      const r=await fetch("/api/ingest",{method:"POST",body:fd});
-      const j=await r.json();
-      if(r.ok){ okN++;
-        lines.push(`✓ <b>${esc(f.name)}</b> → ${j.format} · ${j.period_label} · `
-          + (Object.entries(j.inserted).map(([k,v])=>k+" "+v).join(", ")||"행 0")
-          + (j.warnings.length?` · <span class="err">⚠ ${j.warnings.length}</span>`:""));
-      } else { failN++;
-        lines.push(`<span class="err">✗ ${esc(f.name)}: ${esc((j.detail||JSON.stringify(j)).slice(0,180))}</span>`); }
-    }catch(err){ failN++; lines.push(`<span class="err">✗ ${esc(f.name)}: ${esc(''+err)}</span>`); }
-    el("upmsg").innerHTML = lines.join("<br>");
-  }
-  el("upmsg").innerHTML = lines.concat(`<b>완료: ${okN} 성공 / ${failN} 실패</b>`).join("<br>");
-  await refreshMeta(); await loadBatches();
-  loadAS(); loadWeeklyInit(); initTickets(); mapDataLoaded=false;
-  if(!el("tab-map").hidden) loadMap();
-}
-el("upl").addEventListener("change", e=>{ const f=e.target.files; e.target.value=""; uploadFiles(f); });
-(()=>{ const d=el("drop"); if(!d) return;
-  d.addEventListener("click", ()=> el("upl").click());               // 영역 클릭 → 파일선택
-  ["dragenter","dragover"].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();d.classList.add("hot");}));
-  ["dragleave","dragend"].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();d.classList.remove("hot");}));
-  d.addEventListener("drop",e=>{e.preventDefault();e.stopPropagation();d.classList.remove("hot");
-    uploadFiles(e.dataTransfer && e.dataTransfer.files);});
-  // 페이지 전체에서 파일 드롭 시 브라우저가 파일을 여는 것 방지 + 데이터탭이면 업로드
-  ["dragover","drop"].forEach(ev=>document.addEventListener(ev,e=>{
-    if(e.target.closest && e.target.closest("#tab-data")) return; e.preventDefault();
-  }));
-})();
-// Ctrl+V 로 엑셀 파일 붙여넣기 (데이터 관리 탭에서만)
-document.addEventListener("paste", e=>{
-  if(el("tab-data").hidden) return;
-  const files=[...(e.clipboardData?.files||[])];
-  if(files.length){ e.preventDefault(); uploadFiles(files); }
-});
-
-async function loadGsheet(){
-  const s = await api("/api/gsheet/status");
-  if(!s.enabled){
-    el("gs-state").textContent = "미설정";
-    el("gs-body").innerHTML = `<div class="muted" style="line-height:1.7">
-      서버에 구글 서비스 계정을 연결하면 엑셀 업로드 없이 시트에서 바로 가져옵니다.<br>
-      1) Google Cloud 프로젝트에서 <b>Drive API + Sheets API</b> 사용 설정<br>
-      2) <b>서비스 계정</b> 생성 → JSON 키를 <code>deploy/google-sa.json</code> 으로 저장<br>
-      3) 연동할 각 구글 시트를 서비스 계정 이메일에 <b>뷰어</b>로 공유<br>
-      4) <code>.env</code> 에 <code>TSD_GOOGLE_SA_JSON=/deploy/google-sa.json</code> 추가 →
-         <code>docker compose up -d backend</code></div>`;
-    return;
-  }
-  el("gs-state").textContent = "사용중";
-  el("gs-body").innerHTML = `
-    <div class="chips">
-      <input type="search" id="gs-url" placeholder="구글 시트 URL 붙여넣기" style="width:340px">
-      <span class="upbtn" id="gs-add">시트 추가</span>
-      <span class="chip" id="gs-syncall">전체 동기화</span>
-    </div>
-    <div id="gs-msg" class="muted"></div>
-    <div class="scroll"><table id="t-gs"></table></div>`;
-  el("gs-add").onclick = async ()=>{
-    const url = el("gs-url").value.trim(); if(!url) return;
-    el("gs-msg").textContent = "추가 중…";
-    const r = await fetch("/api/gsheet/sources",{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({url})});
-    el("gs-msg").textContent = r.ok ? "추가됨. '전체 동기화'를 눌러 가져오세요." : "추가 실패: "+(await r.text()).slice(0,140);
-    el("gs-url").value=""; renderGsList();
-  };
-  el("gs-syncall").onclick = ()=> gsSync(null);
-  renderGsList(s.sources);
-}
-async function renderGsList(src){
-  if(!src) src = (await api("/api/gsheet/status")).sources;
-  el("t-gs").innerHTML =
-    "<tr><th>시트</th><th>마지막 동기화</th><th>상태</th><th></th></tr>" +
-    src.map(x=>`<tr>
-      <td title="${esc(x.sheet_id)}">${esc(x.title||x.sheet_id)}</td>
-      <td>${fmtTime(x.last_sync_at)}</td>
-      <td>${x.last_status==="ok"?"✓":esc(x.last_status||"–")}</td>
-      <td><span class="chip" onclick="gsSync(${x.id})">동기화</span>
-          <span class="chip" onclick="gsDel(${x.id})">삭제</span></td>
-    </tr>`).join("");
-}
-async function gsSync(id){
-  el("gs-msg").textContent = "동기화 중…";
-  const r = await fetch("/api/gsheet/sync"+(id?`?id=${id}`:""),{method:"POST"});
-  const j = await r.json();
-  el("gs-msg").innerHTML = (j.results||[]).map(x=>
-    x.ok ? `✓ ${esc(x.period_label||x.sheet_id)} (${Object.entries(x.inserted||{}).map(([k,v])=>k+" "+v).join(", ")||"행 0"})`
-         : `<span class="err">✗ ${esc(x.sheet_id)}: ${esc(x.error||"")}</span>`).join("<br>");
-  renderGsList(); refreshMeta(); loadBatches(); loadAS(); loadWeeklyInit(); initTickets(); mapDataLoaded=false;
-}
-async function gsDel(id){
-  if(!confirm("이 시트 연동을 삭제할까요? (이미 적재된 데이터는 남습니다)")) return;
-  await fetch(`/api/gsheet/sources/${id}`,{method:"DELETE"}); renderGsList();
-}
-
-async function loadBatches(){
-  loadGsheet();
-  const b = await api("/api/batches?limit=40");
-  el("t-batches").innerHTML =
-    "<tr><th>업로드시각</th><th>양식</th><th>기간</th><th>파일</th><th>상태</th><th>올린이</th><th></th></tr>" +
-    b.map(x=>`<tr>
-      <td>${fmtTime(x.uploaded_at)}</td>
-      <td>${esc(x.format_detected)}</td><td>${esc(x.period_label)}</td>
-      <td title="${esc(x.source_name)}">${esc((x.source_name||"").slice(0,36))}</td>
-      <td>${x.status==="active"?"<b>사용중</b>":esc(x.status)}${x.warning_count?` <span class="err">⚠${x.warning_count}</span>`:""}</td>
-      <td>${esc(x.uploaded_by)}</td>
-      <td>${x.status!=="active"?`<span class="chip" onclick="rollback(${x.id})">되돌리기</span>`:""}</td>
-    </tr>`).join("");
-}
-async function rollback(id){
-  if(!confirm("이 배치를 되돌려 직전 버전을 다시 사용중으로 만들까요?")) return;
-  const r = await fetch(`/api/batches/${id}/rollback`,{method:"POST"});
-  await loadBatches(); await refreshMeta(); loadAS(); loadWeeklyInit(); initTickets(); mapDataLoaded=false;
-}
-
-// ========== 채권 ==========
-const teamName = t => ({D:"D Tech",M:"M Tech",K:"K Tech"}[t]||t||"기타");
-async function loadRecv(){
-  const d = await api("/api/recv/overview");
-  const c = d.cards||{};
-  const rate = c.bal_krw ? (c.overdue_krw*100/c.bal_krw) : 0;
-  el("recv-cards").innerHTML=[
-    ["채권 잔액(원환산)", won(c.bal_krw), `청구 ${won(c.billed_krw)} 중 미회수`],
-    ["연체·미회수 잔액", won(c.overdue_krw), rate.toFixed(0)+"% · 미회수건 "+num(c.open_n)],
-    ["장기미수 잔액", c.long_krw?won(c.long_krw):"–", c.long_krw?"국내 <장기미회수> 구분":"국내 채권 미등록"],
-    ["거래처 수", num(c.entities), "잔액 보유 기준"],
-  ].map(x=>`<div class="card"><div class="k">${x[0]}</div><div class="v">${x[1]}</div><div class="s">${esc(x[2])}</div></div>`).join("");
-
-  const bt=d.by_team||[];
-  chart("c-recv-team",{grid:{left:70,right:60,top:10,bottom:24},tooltip:{trigger:"axis",axisPointer:{type:"shadow"},
-      valueFormatter:won},
-    legend:{...LEG,top:0,itemWidth:12,itemHeight:8,textStyle:{color:TXT,fontSize:11},data:["정상","연체·미회수","장기미수"]},
-    xAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"억":Math.round(v/1e6)+"백만"}},
-    yAxis:{type:"category",...AX,inverse:true,data:bt.map(x=>teamName(x.team))},
-    series:[
-      {name:"정상",type:"bar",stack:"x",data:bt.map(x=>Math.max((x.bal_krw||0)-(x.overdue_krw||0),0)),itemStyle:{color:"#38dcf0"}},
-      {name:"연체·미회수",type:"bar",stack:"x",data:bt.map(x=>Math.max((x.overdue_krw||0)-(x.long_krw||0),0)),itemStyle:{color:"#f87171"}},
-      {name:"장기미수",type:"bar",stack:"x",data:bt.map(x=>x.long_krw||0),itemStyle:{color:"#7f1d1d"}},
-      {name:"",type:"bar",stack:"x",data:bt.map(()=>0),tooltip:{show:false},
-        label:{show:true,position:"right",color:TXT,fontSize:10,formatter:p=>won(bt[p.dataIndex].bal_krw)}}]});
-
-  chart("c-recv-cur", donut((d.by_currency||[]).filter(x=>x.bal_krw>0).map(x=>({k:x.k,n:x.bal_krw}))));
-  chart("c-recv-status", donut((d.by_status||[]).filter(x=>x.bal_krw>0).map(x=>({k:x.k,n:x.bal_krw}))));
-
-  const ag=d.aging||[];
-  chart("c-recv-aging",{grid:{left:56,right:20,top:16,bottom:24},tooltip:{trigger:"axis",valueFormatter:won},
-    xAxis:{type:"category",data:ag.map(x=>x.bucket+"일"),...AX,axisLabel:{color:TXT,fontSize:11}},
-    yAxis:{type:"value",...AX,axisLabel:{color:TXT,fontSize:10,formatter:v=>v>=1e8?(v/1e8).toFixed(0)+"억":Math.round(v/1e6)+"백만"}},
-    series:[{type:"bar",barMaxWidth:34,data:ag.map(x=>x.bal_krw),
-      itemStyle:{color:p=>["0-30","31-60"].includes(ag[p.dataIndex].bucket)?"#38dcf0":ag[p.dataIndex].bucket==="61-90"?"#fbbf24":"#f87171",borderRadius:[3,3,0,0]},
-      label:{show:true,position:"top",color:TXT,fontSize:10,formatter:p=>ag[p.dataIndex].n+"건"}}]});
-
-  const stBadge = r => r.long_overdue
-      ? '<span style="background:#7f1d1d;color:#fecaca;padding:1px 7px;border-radius:9px;font-size:11px">장기미수</span>'
-      : r.overdue
-      ? '<span style="background:#7f2d2d;color:#fca5a5;padding:1px 7px;border-radius:9px;font-size:11px">연체</span>'
-      : '<span class="muted">정상</span>';
-  el("t-recv").innerHTML =
-    "<tr><th>거래처</th><th>팀</th><th>채널</th><th>국가</th><th class='num'>건</th><th class='num'>잔액(원)</th><th>상태</th></tr>" +
-    (d.top||[]).map(r=>`<tr${r.long_overdue?' style="background:rgba(127,29,29,.22)"':''}>
-      <td>${esc(r.entity)}</td><td>${esc(teamName(r.team))}</td><td>${esc(r.channel||"")}</td>
-      <td>${esc(r.country||"")}</td><td class="num">${num(r.n)}</td>
-      <td class="num">${won(r.bal_krw)}</td>
-      <td>${stBadge(r)}</td>
-    </tr>`).join("");
-}
-
-// ========== boot ==========
-(async()=>{
-  await refreshMeta();
-  loadAS(); loadWeeklyInit(); initTickets();
-  setInterval(()=>{ loadAS(); refreshMeta(); }, 60000);
-})();
-</script>
+<script src="/app.js?v=11"></script>
 </body>
 </html>
