@@ -36,13 +36,49 @@ _KR_REGION = {  # 시·군 → 시·도  (지도용, 자주 나오는 것만; �
 }
 _COUNTRY_IN_PAREN = re.compile(r"\(([^()]+)\)\s*$")
 
+# 원본 시트 '제품분류' 열은 제품명(사양) 기준 REGEXMATCH 수식으로 자동 채워지는데,
+# PORT-X 조건절이 REGEXMATCH(#REF!, ...) 로 깨져있어(원본 시트 버그, 2026-09 확인)
+# 그 조건까지 내려가는 행(E2V/TOSHIBA/GDP/PORT-X 등 앞 패턴에 안 걸리는 제품)이
+# 전부 '#REF!' 로 나온다. 같은 규칙을 여기서 재현해 대신 분류한다.
+_LINE_PATTERNS = [
+    (re.compile(r"OSCAR|BELLIGER|ZEN", re.I), "C-ARM"),
+    (re.compile(r"HESTIA|GMX|DMX|MX", re.I), "MAMMO"),
+    (re.compile(r"GT300|VOLUX|PAPAYA.*3D", re.I), "CT"),
+    (re.compile(r"GIX|PAPAYA.*DX", re.I), "SENSOR"),
+    (re.compile(r"PAPAYA", re.I), "PANO"),
+    (re.compile(r"DVAS", re.I), "DVAS"),
+    (re.compile(r"PORT-X", re.I), "PORTABLE"),
+]
+
+
+def _fix_line(line, model):
+    """'#REF!' 뿐 아니라 원본 셀이 그냥 비어있는 경우도 같은 규칙으로 재분류해
+    '미상' 대신 '기타'로 모은다(제품명은 product_model 에 그대로 남아 상세 추적 가능)."""
+    broken = (not line) or (line.strip().upper() == "#REF!")
+    if not broken:
+        return line
+    if model:
+        for pat, cat in _LINE_PATTERNS:
+            if pat.search(model):
+                return cat
+    return "기타"
+
+
+def _norm_tab(s: str) -> str:
+    """탭 이름 비교용 정규화 — 공백/대괄호/슬래시 제거(예: '[M/D] AS' → 'MDAS').
+    자동화 스크립트가 탭 이름에 '[K] AS/매출' 처럼 대괄호·슬래시를 넣는 방식으로
+    또 바뀌어서(2026-09-21) 공백만 지우던 걸로는 'M/D' 가 'MD' 와 안 맞았음."""
+    for ch in " []/":
+        s = s.replace(ch, "")
+    return s
+
 
 def _tab(wb, *needles):
     for n in wb.sheetnames:
         if n.startswith("_"):  # 자동화 스크립트가 만드는 내부 스테이징 탭(_D_K_AS 등)은 제외
             continue
-        s = n.replace(" ", "")
-        if all(x.replace(" ", "") in s for x in needles):
+        s = _norm_tab(n)
+        if all(_norm_tab(x) in s for x in needles):
             return n
     return None
 
@@ -196,7 +232,7 @@ def _parse_k(wb, rep):
                 seq_no=int(no) if no is not None else None,
                 region_kr=_KR_REGION.get(reg, reg), region=reg,
                 shipped_to=site, serial_no=serial,
-                product_model=model, product_line=_get(row, c.get("제품분류")),
+                product_model=model, product_line=_fix_line(_get(row, c.get("제품분류")), model),
                 warranty=_get(row, c.get("보증구분")),
                 received_date=_get(row, c.get("접수일"), as_date),
                 action_date=_get(row, c.get("조치일"), as_date),
@@ -275,7 +311,7 @@ def _parse_md(wb, rep):
                 country=country if overseas else None,
                 region_kr=(None if overseas else _KR_REGION.get(country, country)),
                 region=_get(row, c.get("지역")),
-                product_model=model, product_line=_get(row, c.get("제품분류")),
+                product_model=model, product_line=_fix_line(_get(row, c.get("제품분류")), model),
                 serial_no=_get(row, c.get("제조번호/코드")),
                 warranty=_get(row, c.get("보증구분")),
                 received_date=_get(row, c.get("접수일"), as_date),

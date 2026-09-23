@@ -29,6 +29,11 @@ services:
       TSD_KR_MAP_ATTRIBUTION: ${TSD_KR_MAP_ATTRIBUTION:-}
       # 구글 시트 연동: 서비스 계정 JSON 을 deploy/google-sa.json 에 두면 활성화.
       TSD_GOOGLE_SA_JSON: ${TSD_GOOGLE_SA_JSON:-}
+      # geno-one(사내 ERP) AS관리 자동 동기화 로그인 계정 — 옆의 .env 파일에서 주입.
+      TSD_GENO_ONE_USERNAME: ${TSD_GENO_ONE_USERNAME:-}
+      TSD_GENO_ONE_PASSWORD: ${TSD_GENO_ONE_PASSWORD:-}
+      TSD_GENO_ONE_SHEET_WEBHOOK_URL: ${TSD_GENO_ONE_SHEET_WEBHOOK_URL:-}
+      TSD_GENO_ONE_SHEET_SECRET: ${TSD_GENO_ONE_SHEET_SECRET:-}
     volumes:
       - ./deploy:/deploy:ro
       - ./frontend/dist/vendor:/vendor:ro

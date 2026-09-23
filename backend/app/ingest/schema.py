@@ -8,7 +8,7 @@ FactTable = Literal[
     "svc_summary", "svc_region", "defect_breakdown", "equipment_stat",
     "collection_line", "receivable", "svc_case", "monthly_trend",
     "kpi_item", "svc_issue", "hr_event", "as_ticket", "plan_item",
-    "maintenance_contract",
+    "maintenance_contract", "geno_one_ticket",
 ]
 
 

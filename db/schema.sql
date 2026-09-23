@@ -384,6 +384,62 @@ CREATE TABLE gsheet_source (
 );
 
 -- ---------------------------------------------------------------------------
+-- geno-one(사내 ERP, one.genoray.com) AS관리(/aspart) 원본 스냅샷.
+-- 해외(M/D)만 존재·K국내 0건이라 as_ticket(통합시트 md_service)과 스코프가 달라
+-- 별도 테이블로 격리 적재 후 나중에 교차검증한다. scope_key='geno_one_aspart' →
+-- 재동기화 시 이전 batch 자동 대체(v_latest_batch).
+-- ---------------------------------------------------------------------------
+CREATE TABLE geno_one_ticket (
+    id                    BIGSERIAL PRIMARY KEY,
+    batch_id              BIGINT NOT NULL REFERENCES upload_batch(id) ON DELETE CASCADE,
+    period_id             BIGINT NOT NULL REFERENCES report_period(id),
+    seq_no                TEXT,      -- 원본 'No'
+    charge_type           TEXT,      -- 담당구분 (본사 등)
+    dealer                TEXT,      -- 딜러사
+    customer              TEXT,      -- 고객사
+    issue                 TEXT,
+    product_name          TEXT,      -- 제품명
+    warranty_expire       DATE,      -- 보증기간 만료일
+    engineer              TEXT,      -- 조치/출장자
+    serial_no             TEXT,      -- 시리얼 넘버
+    received_date         DATE,      -- 접수일
+    action_date           DATE,      -- 조치일
+    service_status        TEXT,      -- Service Status (New/Inprogress/Holding/Close)
+    contact_point         TEXT,      -- Contact Point
+    dealer_country        TEXT,      -- 국가(딜러사)
+    period_bucket         TEXT,      -- 기간별
+    post_check            TEXT,      -- 조치 후 점검
+    result                TEXT,      -- 결과
+    symptom               TEXT,      -- 불량증상
+    detail                TEXT,      -- 상세설명
+    ticket_type           TEXT,      -- 유형
+    customer_country      TEXT,      -- 국가(고객사)
+    parts_changed         TEXT,      -- 부품변경내역
+    action_taken          TEXT,      -- 조치사항
+    repair_cost           NUMERIC,   -- 수리비 (720건 중 대부분 공란, 원본 "5,115 USD" 형태)
+    repair_currency       TEXT,      -- 수리비 통화 (원본 문자열에서 분리, 예: USD)
+    category              TEXT,      -- 구분(서비스, 고객불만)
+    followup              TEXT,      -- 후속조치
+    line_major            TEXT,      -- 분석표 대분류
+    line_mid              TEXT,      -- 분석표 중분류
+    line_minor            TEXT,      -- 분석표 소분류
+    fix_class             TEXT,      -- 조치분류
+    root_cause            TEXT,      -- 원인분석
+    udi                   TEXT,
+    warranty_period       TEXT,      -- 보증기간
+    warranty_paid         TEXT,      -- 유상/무상
+    adverse_event         TEXT,      -- 이상사례
+    case_class            TEXT,      -- 원본 '구분' (의미 미확인, 원본 그대로 보관)
+    ship_date             DATE,      -- 출하일
+    region_analysis       TEXT,      -- 지역(분석표)
+    defect_class_analysis TEXT,      -- 불량구분(분석표)
+    billing_note          TEXT       -- 청구내역
+);
+CREATE INDEX ix_geno_one_period ON geno_one_ticket(period_id);
+CREATE INDEX ix_geno_one_serial ON geno_one_ticket(serial_no);
+CREATE INDEX ix_geno_one_status ON geno_one_ticket(service_status);
+
+-- ---------------------------------------------------------------------------
 -- (선택) 대시보드 위에서 다는 코멘트 레이어 — 엑셀과 무관한 협업 메모
 -- 입력은 업로드로만 하지만, 항목별 토론/주석은 필요할 수 있어 남겨둠.
 -- ---------------------------------------------------------------------------

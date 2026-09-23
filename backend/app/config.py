@@ -25,5 +25,15 @@ class Settings(BaseSettings):
     # 비어 있으면 /api/gsheet/* 는 501 을 반환.
     google_sa_json: str = ""
 
+    # geno-one(사내 ERP, one.genoray.com) AS관리 자동 동기화 로그인 계정.
+    # 비어 있으면 /api/geno_one/* 는 501 을 반환.
+    geno_one_username: str = ""
+    geno_one_password: str = ""
+
+    # 통합 구글시트에 행 추가(교차검증 결과 반영)용 Apps Script 웹 앱.
+    # deploy/apps_script_append.gs 를 시트 편집자가 배포해서 만든 URL/비밀키.
+    geno_one_sheet_webhook_url: str = ""
+    geno_one_sheet_secret: str = ""
+
 
 settings = Settings()

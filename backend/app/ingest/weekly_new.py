@@ -210,6 +210,9 @@ def _receivable_table(g, team, rep):
             continue
         if first and first.startswith("2-3"):
             break
+        if "합계" in (first or "") or "합계" in (second or ""):
+            # '금주 합계' 요약 블록(법인별 합계 재진술) — 개별 채권 행이 아님, 이후 전부 스킵
+            break
         country = clean(_cell(row, c0 + 2))
         cur = None
         nums, dates = [], []
